@@ -6,7 +6,7 @@ from aiogram.filters import CommandStart
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 
 # Replace with the exact token BotFather handed to you
-BOT_TOKEN = "YOUR_BOT_TOKEN"
+BOT_TOKEN = "8274446621:AAH6ItCjsHzle6GebZsGGHSbmGqyfRE7S0I"
 # Replace with the live HTTPS URL where your frontend index.html is deployed
 MINI_APP_URL = "https://your-deployed-frontend.vercel.app"
 

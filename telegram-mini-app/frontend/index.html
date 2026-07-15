@@ -3,53 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Mini App</title>
-    <!-- 1. Include the Telegram WebApp Script -->
+    <title>Jisoo Booking Shop</title>
+    <!-- Include the mandatory Telegram WebApp Script -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* 2. Use Telegram theme variables for a native look */
         body {
-            font-family: sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--tg-theme-bg-color, #ffffff);
             color: var(--tg-theme-text-color, #000000);
-            padding: 20px;
-            text-align: center;
+            margin: 0;
+            padding: 15px;
+            user-select: none;
         }
-        .btn {
-            background-color: var(--tg-theme-button-color, #248bca);
-            color: var(--tg-theme-button-text-color, #ffffff);
-            padding: 10px 20px;
+
+        /* 2-Column Grid exactly like Durger King */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            padding-top: 10px;
+        }
+
+        /* Individual Card Container */
+        .item-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .image-wrapper {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin-bottom: 8px;
+        }
+
+        .item-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* "NEW" status badge overlay */
+        .badge-new {
+            position: absolute;
+            bottom: 0;
+            right: -10px;
+            background-color: #4caf50;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 6px;
+            border: 2px solid var(--tg-theme-bg-color, #ffffff);
+        }
+
+        .item-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .item-price {
+            font-weight: bold;
+        }
+
+        /* Action Buttons styling */
+        .btn-action {
+            width: 85%;
+            padding: 8px 0;
             border: none;
             border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
             cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+
+        .btn-action:active {
+            transform: scale(0.95);
+        }
+
+        /* Yellow 'ADD' style */
+        .btn-add {
+            background-color: #f1a938;
+            color: white;
+        }
+
+        /* Green 'BUY' style */
+        .btn-buy {
+            background-color: #4caf50;
+            color: white;
         }
     </style>
 </head>
 <body>
-    <h1>Welcome, <span id="username">User</span>!</h1>
-    <p>This is a custom Mini App for my product.</p>
-    <button class="btn" id="action-btn">Send Data Back</button>
+
+    <div class="menu-grid">
+        <!-- Item 1: Cake with NEW Badge -->
+        <div class="item-card">
+            <div class="image-wrapper">
+                <img class="item-image" src="https://img.icons8.com/emoji/96/piece-of-cake.png" alt="Cake">
+                <span class="badge-new">NEW</span>
+            </div>
+            <div class="item-title">Cake · <span class="item-price">⭐ 1</span></div>
+            <button class="btn-action btn-buy" onclick="selectItem('Cake', '⭐ 1')">BUY</button>
+        </div>
+
+        <!-- Item 2: Burger -->
+        <div class="item-card">
+            <div class="image-wrapper">
+                <img class="item-image" src="https://img.icons8.com/emoji/96/hamburger-emoji.png" alt="Burger">
+            </div>
+            <div class="item-title">Burger · <span class="item-price">$4.99</span></div>
+            <button class="btn-action btn-add" onclick="selectItem('Burger', '$4.99')">ADD</button>
+        </div>
+
+        <!-- Item 3: Fries -->
+        <div class="item-card">
+            <div class="image-wrapper">
+                <img class="item-image" src="https://img.icons8.com/emoji/96/french-fries.png" alt="Fries">
+            </div>
+            <div class="item-title">Fries · <span class="item-price">$1.49</span></div>
+            <button class="btn-action btn-add" onclick="selectItem('Fries', '$1.49')">ADD</button>
+        </div>
+
+        <!-- Item 4: Hotdog -->
+        <div class="item-card">
+            <div class="image-wrapper">
+                <img class="item-image" src="https://img.icons8.com/emoji/96/hot-dog.png" alt="Hotdog">
+            </div>
+            <div class="item-title">Hotdog · <span class="item-price">$3.49</span></div>
+            <button class="btn-action btn-add" onclick="selectItem('Hotdog', '$3.49')">ADD</button>
+        </div>
+    </div>
 
     <script>
-        // Initialize Telegram WebApp
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Expands the app to full height
+        tg.expand();
 
-        // Access User Data provided securely by Telegram
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name;
+        function selectItem(name, price) {
+            // Setup Telegram's native sticky bottom bar
+            tg.MainButton.setText(`VIEW ORDER (${name} - ${price})`);
+            tg.MainButton.show();
+            
+            tg.MainButton.onClick(function() {
+                tg.sendData(JSON.stringify({ item: name, cost: price }));
+                tg.close();
+            });
         }
-
-        // Handle a click event to pass data back to the Telegram Bot chat
-        document.getElementById('action-btn').addEventListener('click', () => {
-            const dataToSend = { message: "Hello from the Mini App!" };
-            
-            // This sends a data payload back to the bot conversation
-            tg.sendData(JSON.stringify(dataToSend));
-            
-            // Close the app automatically
-            tg.close();
-        });
     </script>
 </body>
 </html>

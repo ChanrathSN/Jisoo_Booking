@@ -2,12 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AquaLife Booking & Store</title>
-  <!-- Telegram Web App SDK (Required) -->
+
+  <meta name="viewport"
+        content="width=device-width,
+        initial-scale=1.0,
+        maximum-scale=1.0,
+        user-scalable=no">
+
+  <title>AquaLife Products</title>
+
+  <!-- Telegram Web App SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  
+
   <style>
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -15,204 +23,888 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+
       background-color: var(--tg-theme-bg-color, #ffffff);
+
       color: var(--tg-theme-text-color, #000000);
+
       padding: 16px;
+
       padding-bottom: 80px;
+
       user-select: none;
     }
 
-    /* 2-Column Grid Layout */
+
+    /* AQUALIFE HEADER */
+
+    .header {
+      text-align: center;
+
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      color: #0057B8;
+
+      font-size: 24px;
+
+      font-weight: 800;
+    }
+
+    .header p {
+      color: #777;
+
+      font-size: 13px;
+
+      margin-top: 4px;
+    }
+
+
+    /* PRODUCT GRID */
+
     .grid-container {
+
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+
+      grid-template-columns:
+        repeat(2, 1fr);
+
       gap: 20px 16px;
     }
 
-    /* Product Card */
+
+    /* PRODUCT CARD */
+
     .product-card {
+
       display: flex;
+
       flex-direction: column;
+
       align-items: center;
+
       text-align: center;
     }
 
+
+    /* IMAGE */
+
     .image-wrapper {
+
       position: relative;
-      width: 100px;
-      height: 100px;
+
+      width: 120px;
+
+      height: 120px;
+
       display: flex;
+
       align-items: center;
+
       justify-content: center;
+
       margin-bottom: 8px;
     }
 
     .image-wrapper img {
+
       max-width: 100%;
+
       max-height: 100%;
+
       object-fit: contain;
     }
 
+
+    /* NEW BADGE */
+
     .badge-new {
+
       position: absolute;
+
       bottom: 4px;
+
       right: 0px;
-      background-color: #4eb851;
+
+      background-color: #0057B8;
+
       color: white;
-      font-size: 11px;
+
+      font-size: 10px;
+
       font-weight: bold;
-      padding: 2px 6px;
+
+      padding: 3px 6px;
+
       border-radius: 6px;
+
       text-transform: uppercase;
     }
 
+
+    /* PRODUCT NAME */
+
     .product-title {
-      font-size: 15px;
+
+      font-size: 14px;
+
       font-weight: 600;
+
       margin-bottom: 10px;
-      color: var(--tg-theme-text-color, #000000);
+
+      min-height: 40px;
     }
 
     .price-text {
+
+      color: #0057B8;
+
       font-weight: 700;
     }
 
+
+    /* ADD BUTTON */
+
     .btn-add {
+
       width: 100%;
+
       max-width: 130px;
+
       padding: 8px 0;
-      background-color: #f3a738;
+
+      background-color: #0057B8;
+
       color: white;
+
       border: none;
+
       border-radius: 10px;
+
       font-size: 15px;
+
       font-weight: bold;
+
       cursor: pointer;
     }
 
+
+    /* SPECIAL BUY BUTTON */
+
     .btn-buy {
-      background-color: #4eb851;
+
+      background-color: #31b545;
     }
 
+
     .btn-add:active {
+
       transform: scale(0.96);
+
       opacity: 0.9;
     }
 
+
+    /* QUANTITY COUNTER */
+
     .counter-wrapper {
+
       display: none;
+
       align-items: center;
+
       justify-content: space-between;
+
       width: 100%;
+
       max-width: 130px;
     }
 
+
     .btn-count {
+
       width: 36px;
+
       height: 36px;
-      background-color: #f3a738;
+
+      background-color: #0057B8;
+
       color: white;
+
       border: none;
+
       border-radius: 8px;
+
       font-size: 18px;
+
       font-weight: bold;
+
       cursor: pointer;
     }
 
+
     .count-number {
+
       font-size: 16px;
+
       font-weight: bold;
     }
+
   </style>
+
 </head>
+
+
 <body>
 
-  <div class="grid-container">
-    <!-- Item 1 -->
-    <div class="product-card" id="card-1">
-      <div class="image-wrapper">
-        <img src="https://em-content.zobj.net/source/microsoft-teams/363/shortcake_1f370.png" alt="Cake">
-        <span class="badge-new">NEW</span>
-      </div>
-      <div class="product-title">Cake · ⭐ <span class="price-text">1</span></div>
-      <button class="btn-add btn-buy" onclick="addToCart(1)">BUY</button>
-      <div class="counter-wrapper" id="counter-1">
-        <button class="btn-count" onclick="changeQty(1, -1)">-</button>
-        <span class="count-number" id="qty-1">1</span>
-        <button class="btn-count" onclick="changeQty(1, 1)">+</button>
-      </div>
-    </div>
 
-    <!-- Item 2 -->
-    <div class="product-card" id="card-2">
-      <div class="image-wrapper">
-        <img src="https://em-content.zobj.net/source/microsoft-teams/363/hamburger_1f354.png" alt="Burger">
-      </div>
-      <div class="product-title">Burger · <span class="price-text">$4.99</span></div>
-      <button class="btn-add" onclick="addToCart(2)">ADD</button>
-      <div class="counter-wrapper" id="counter-2">
-        <button class="btn-count" onclick="changeQty(2, -1)">-</button>
-        <span class="count-number" id="qty-2">1</span>
-        <button class="btn-count" onclick="changeQty(2, 1)">+</button>
-      </div>
-    </div>
+  <!-- AQUALIFE HEADER -->
+
+  <div class="header">
+
+    <h1>AQUALIFE</h1>
+
+    <p>Water Purification Products</p>
+
   </div>
 
+
+  <div class="grid-container">
+
+
+    <!-- PRODUCT 1 -->
+
+    <div class="product-card" id="card-1">
+
+      <div class="image-wrapper">
+
+        <!-- Replace this with your actual product image -->
+
+        <img
+          src="https://via.placeholder.com/150"
+          alt="ROKKET Outdoor Filter">
+
+        <span class="badge-new">
+          NEW
+        </span>
+
+      </div>
+
+
+      <div class="product-title">
+
+        ROKKET Outdoor Filter
+
+        <br>
+
+        <span class="price-text">
+          $99
+        </span>
+
+      </div>
+
+
+      <button
+        class="btn-add btn-buy"
+        onclick="addToCart(1)">
+
+        BUY
+
+      </button>
+
+
+      <div
+        class="counter-wrapper"
+        id="counter-1">
+
+        <button
+          class="btn-count"
+          onclick="changeQty(1, -1)">
+
+          -
+
+        </button>
+
+
+        <span
+          class="count-number"
+          id="qty-1">
+
+          1
+
+        </span>
+
+
+        <button
+          class="btn-count"
+          onclick="changeQty(1, 1)">
+
+          +
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- PRODUCT 2 -->
+
+    <div class="product-card" id="card-2">
+
+      <div class="image-wrapper">
+
+        <img
+          src="https://via.placeholder.com/150"
+          alt="NOVA Water Purifier">
+
+      </div>
+
+
+      <div class="product-title">
+
+        NOVA Water Purifier
+
+        <br>
+
+        <span class="price-text">
+          Contact Us
+        </span>
+
+      </div>
+
+
+      <button
+        class="btn-add"
+        onclick="addToCart(2)">
+
+        ADD
+
+      </button>
+
+
+      <div
+        class="counter-wrapper"
+        id="counter-2">
+
+        <button
+          class="btn-count"
+          onclick="changeQty(2, -1)">
+
+          -
+
+        </button>
+
+
+        <span
+          class="count-number"
+          id="qty-2">
+
+          1
+
+        </span>
+
+
+        <button
+          class="btn-count"
+          onclick="changeQty(2, 1)">
+
+          +
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- PRODUCT 3 -->
+
+    <div class="product-card" id="card-3">
+
+      <div class="image-wrapper">
+
+        <img
+          src="https://via.placeholder.com/150"
+          alt="TRICO Water Purifier">
+
+      </div>
+
+
+      <div class="product-title">
+
+        TRICO Water Purifier
+
+        <br>
+
+        <span class="price-text">
+          Contact Us
+        </span>
+
+      </div>
+
+
+      <button
+        class="btn-add"
+        onclick="addToCart(3)">
+
+        ADD
+
+      </button>
+
+
+      <div
+        class="counter-wrapper"
+        id="counter-3">
+
+        <button
+          class="btn-count"
+          onclick="changeQty(3, -1)">
+
+          -
+
+        </button>
+
+
+        <span
+          class="count-number"
+          id="qty-3">
+
+          1
+
+        </span>
+
+
+        <button
+          class="btn-count"
+          onclick="changeQty(3, 1)">
+
+          +
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- PRODUCT 4 -->
+
+    <div class="product-card" id="card-4">
+
+      <div class="image-wrapper">
+
+        <img
+          src="https://via.placeholder.com/150"
+          alt="Filter Cartridge">
+
+      </div>
+
+
+      <div class="product-title">
+
+        Filter Cartridge
+
+        <br>
+
+        <span class="price-text">
+          Contact Us
+        </span>
+
+      </div>
+
+
+      <button
+        class="btn-add"
+        onclick="addToCart(4)">
+
+        ADD
+
+      </button>
+
+
+      <div
+        class="counter-wrapper"
+        id="counter-4">
+
+        <button
+          class="btn-count"
+          onclick="changeQty(4, -1)">
+
+          -
+
+        </button>
+
+
+        <span
+          class="count-number"
+          id="qty-4">
+
+          1
+
+        </span>
+
+
+        <button
+          class="btn-count"
+          onclick="changeQty(4, 1)">
+
+          +
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- PRODUCT 5 -->
+
+    <div class="product-card" id="card-5">
+
+      <div class="image-wrapper">
+
+        <img
+          src="https://via.placeholder.com/150"
+          alt="Water Purifier Accessories">
+
+      </div>
+
+
+      <div class="product-title">
+
+        Accessories
+
+        <br>
+
+        <span class="price-text">
+          Contact Us
+        </span>
+
+      </div>
+
+
+      <button
+        class="btn-add"
+        onclick="addToCart(5)">
+
+        ADD
+
+      </button>
+
+
+      <div
+        class="counter-wrapper"
+        id="counter-5">
+
+        <button
+          class="btn-count"
+          onclick="changeQty(5, -1)">
+
+          -
+
+        </button>
+
+
+        <span
+          class="count-number"
+          id="qty-5">
+
+          1
+
+        </span>
+
+
+        <button
+          class="btn-count"
+          onclick="changeQty(5, 1)">
+
+          +
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- PRODUCT 6 -->
+
+    <div class="product-card" id="card-6">
+
+      <div class="image-wrapper">
+
+        <img
+          src="https://via.placeholder.com/150"
+          alt="ROKKET Service Package">
+
+      </div>
+
+
+      <div class="product-title">
+
+        ROKKET Service Package
+
+        <br>
+
+        <span class="price-text">
+          Contact Us
+        </span>
+
+      </div>
+
+
+      <button
+        class="btn-add"
+        onclick="addToCart(6)">
+
+        ADD
+
+      </button>
+
+
+      <div
+        class="counter-wrapper"
+        id="counter-6">
+
+        <button
+          class="btn-count"
+          onclick="changeQty(6, -1)">
+
+          -
+
+        </button>
+
+
+        <span
+          class="count-number"
+          id="qty-6">
+
+          1
+
+        </span>
+
+
+        <button
+          class="btn-count"
+          onclick="changeQty(6, 1)">
+
+          +
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+
   <script>
+
+
     const tg = window.Telegram.WebApp;
+
+
     tg.expand();
 
+
+    // TELEGRAM MAIN BUTTON
+
     tg.MainButton.setText("VIEW ORDER");
+
     tg.MainButton.setTextColor("#FFFFFF");
-    tg.MainButton.setBackgroundColor("#31b545");
+
+    tg.MainButton.setBackgroundColor("#0057B8");
+
+
+    // CART
 
     let cart = {};
 
+
+    // PRODUCT LIST
+
+    const products = {
+
+      1: {
+        name: "ROKKET Outdoor Filter",
+        price: "$99"
+      },
+
+      2: {
+        name: "NOVA Water Purifier",
+        price: "Contact Us"
+      },
+
+      3: {
+        name: "TRICO Water Purifier",
+        price: "Contact Us"
+      },
+
+      4: {
+        name: "Filter Cartridge",
+        price: "Contact Us"
+      },
+
+      5: {
+        name: "Accessories",
+        price: "Contact Us"
+      },
+
+      6: {
+        name: "ROKKET Service Package",
+        price: "Contact Us"
+      }
+
+    };
+
+
+    // ADD TO CART
+
     function addToCart(id) {
+
       cart[id] = 1;
+
       updateUI(id);
+
       updateMainButton();
+
     }
+
+
+    // CHANGE QUANTITY
 
     function changeQty(id, delta) {
+
       cart[id] = (cart[id] || 0) + delta;
+
+
       if (cart[id] <= 0) {
+
         delete cart[id];
+
       }
+
+
       updateUI(id);
+
       updateMainButton();
+
     }
+
+
+    // UPDATE PRODUCT UI
 
     function updateUI(id) {
-      const card = document.getElementById(`card-${id}`);
-      const btnAdd = card.querySelector('.btn-add');
-      const counter = document.getElementById(`counter-${id}`);
-      const qtyText = document.getElementById(`qty-${id}`);
+
+      const card =
+        document.getElementById(`card-${id}`);
+
+
+      const btnAdd =
+        card.querySelector('.btn-add');
+
+
+      const counter =
+        document.getElementById(`counter-${id}`);
+
+
+      const qtyText =
+        document.getElementById(`qty-${id}`);
+
 
       if (cart[id] > 0) {
+
         btnAdd.style.display = 'none';
+
         counter.style.display = 'flex';
+
         qtyText.innerText = cart[id];
-      } else {
-        btnAdd.style.display = 'block';
-        counter.style.display = 'none';
+
       }
+
+      else {
+
+        btnAdd.style.display = 'block';
+
+        counter.style.display = 'none';
+
+      }
+
     }
+
+
+    // UPDATE MAIN BUTTON
 
     function updateMainButton() {
-      const totalItems = Object.values(cart).reduce((a, b) => a + b, 0);
+
+      const totalItems =
+        Object.values(cart)
+        .reduce((a, b) => a + b, 0);
+
+
       if (totalItems > 0) {
+
         tg.MainButton.show();
-      } else {
-        tg.MainButton.hide();
+
       }
+
+      else {
+
+        tg.MainButton.hide();
+
+      }
+
     }
 
+
+    // SEND ORDER TO TELEGRAM BOT
+
     tg.MainButton.onClick(() => {
-      tg.sendData(JSON.stringify(cart));
+
+
+      const order = {
+
+
+        products: Object.entries(cart).map(
+          ([id, quantity]) => ({
+
+            id: id,
+
+            name: products[id].name,
+
+            price: products[id].price,
+
+            quantity: quantity
+
+          })
+
+        )
+
+      };
+
+
+      tg.sendData(JSON.stringify(order));
+
+
       tg.close();
+
     });
+
+
   </script>
+
+
 </body>
+
 </html>

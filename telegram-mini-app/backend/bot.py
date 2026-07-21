@@ -20,10 +20,7 @@ BOT_TOKEN = "8274446621:AAH6ItCjsHzle6GebZsGGHSbmGqyfRE7S0I"
 
 
 # GitHub Pages Mini App URL
-MINI_APP_URL = (
-    "https://chanrathsn.github.io/"
-    "Jisoo_Booking/telegram-mini-app/frontend/"
-)
+MINI_APP_URL = "https://chanrathsn.github.io/Jisoo_Booking/telegram-mini-app/frontend/
 
 
 # ==========================================

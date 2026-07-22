@@ -14,14 +14,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px 14px}
 .card{text-align:center;display:flex;flex-direction:column;align-items:center}
 .image{width:120px;height:120px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;background:#f5f7f9;overflow:hidden}
-.image img{max-width:100%;max-height:100%;object-fit:contain}
-.product-code{font-size:12px;color:#0077c8;font-weight:700}
-.name{font-size:14px;font-weight:600;min-height:38px;margin-top:3px}
+.name{font-size:14px;font-weight:600;min-height:38px;margin-top:3px;display:flex;align-items:center;justify-content:center}
 .price{font-size:15px;font-weight:700;margin:5px 0 9px}
 .add{width:100%;max-width:130px;padding:9px;background:#0077c8;color:#fff;border:0;border-radius:9px;font-weight:700;font-size:14px;cursor:pointer}
 .counter{display:none;width:100%;max-width:130px;align-items:center;justify-content:space-between}
 .counter button{width:36px;height:36px;border:0;border-radius:8px;background:#0077c8;color:#fff;font-size:20px;font-weight:bold;cursor:pointer}
 .qty{font-size:16px;font-weight:bold}
+
+/* Modal Styling */
+.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;padding:20px}
+.modal{background:var(--tg-theme-bg-color,#fff);border-radius:16px;width:100%;max-width:400px;padding:20px;box-shadow:0 10px 25px rgba(0,0,0,0.2);display:flex;flex-direction:column;max-height:85vh}
+.modal h2{font-size:20px;color:#0077c8;margin-bottom:12px;text-align:center}
+.modal-body{overflow-y:auto;flex:1;margin-bottom:15px}
+.review-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #eee}
+.review-item-name{font-weight:600;font-size:14px}
+.review-item-qty{font-size:12px;color:#666}
+.review-item-price{font-weight:700;font-size:14px}
+.modal-total{display:flex;justify-content:space-between;font-size:18px;font-weight:800;padding:12px 0;border-top:2px solid #0077c8;margin-top:10px}
+.modal-actions{display:flex;gap:10px}
+.btn-cancel{flex:1;padding:12px;background:#e5e5e5;color:#333;border:0;border-radius:10px;font-weight:700;cursor:pointer}
+.btn-submit{flex:1;padding:12px;background:#0077c8;color:#fff;border:0;border-radius:10px;font-weight:700;cursor:pointer}
 </style>
 </head>
 <body>
@@ -31,6 +43,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 </div>
 
 <div class="grid" id="productGrid"></div>
+
+<!-- Order Review Modal -->
+<div class="modal-overlay" id="reviewModal">
+  <div class="modal">
+    <h2>📋 Order Summary</h2>
+    <div class="modal-body" id="modalItems"></div>
+    <div class="modal-total">
+      <span>Total Amount:</span>
+      <span id="modalGrandTotal">$0.00</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Edit Order</button>
+      <button class="btn-submit" onclick="submitOrder()">Confirm & Submit</button>
+    </div>
+  </div>
+</div>
 
 <script>
 const tg = window.Telegram.WebApp;
@@ -62,7 +90,7 @@ function renderProducts(){
             <div class="image">
                 <div style="font-size:42px">💧</div>
             </div>
-            <div class="product-code">${p.code}</div>
+            <!-- Displaying only product name -->
             <div class="name">${p.name}</div>
             <div class="price">$${p.price.toLocaleString()}</div>
             <button class="add" id="add-${p.id}" onclick="addToCart('${p.id}')">ADD</button>
@@ -103,15 +131,6 @@ function updateCard(id){
     }
 }
 
-function getOrderData(){
-    return {
-        products: Object.entries(cart).map(([id, quantity]) => ({
-            id: String(id),
-            quantity: Number(quantity)
-        }))
-    };
-}
-
 function updateMainButton(){
     const totalItems = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
 
@@ -128,21 +147,58 @@ function updateMainButton(){
     }
 }
 
-tg.MainButton.onClick(() => {
+function openModal(){
+    const modalItems = document.getElementById("modalItems");
+    const modalGrandTotal = document.getElementById("modalGrandTotal");
+    
+    let total = 0;
+    let html = "";
+
+    Object.entries(cart).forEach(([id, qty]) => {
+        const prod = products.find(p => p.id === id);
+        if(prod){
+            const itemTotal = prod.price * qty;
+            total += itemTotal;
+            html += `
+                <div class="review-item">
+                    <div>
+                        <div class="review-item-name">${prod.name}</div>
+                        <div class="review-item-qty">Qty: ${qty} × $${prod.price.toLocaleString()}</div>
+                    </div>
+                    <div class="review-item-price">$${itemTotal.toLocaleString()}</div>
+                </div>
+            `;
+        }
+    });
+
+    modalItems.innerHTML = html;
+    modalGrandTotal.textContent = `$${total.toLocaleString()}`;
+    document.getElementById("reviewModal").style.display = "flex";
+    tg.MainButton.hide();
+}
+
+function closeModal(){
+    document.getElementById("reviewModal").style.display = "none";
+    updateMainButton();
+}
+
+function getOrderData(){
+    return {
+        products: Object.entries(cart).map(([id, quantity]) => ({
+            id: String(id),
+            quantity: Number(quantity)
+        }))
+    };
+}
+
+function submitOrder(){
     const orderData = getOrderData();
-
-    if(!orderData.products.length){
-        tg.showAlert("Please select at least one product.");
-        return;
-    }
-
-    tg.MainButton.showProgress();
-
-    // Sends the order payload to Telegram bot
     tg.sendData(JSON.stringify(orderData));
-
-    // Closes the Mini App window
     tg.close();
+}
+
+tg.MainButton.onClick(() => {
+    openModal();
 });
 
 renderProducts();

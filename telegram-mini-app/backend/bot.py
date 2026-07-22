@@ -1,12 +1,11 @@
 import asyncio
 import logging
 import json
-import os
 
+from pathlib import Path
 from datetime import datetime
 
 from aiogram import Bot, Dispatcher, F, types
-
 from aiogram.filters import CommandStart
 
 from aiogram.types import (
@@ -17,17 +16,21 @@ from aiogram.types import (
 )
 
 from reportlab.lib.pagesizes import A4
-
 from reportlab.pdfgen import canvas
 
 
-# ==========================================
+# ==================================================
 # CONFIGURATION
-# ==========================================
+# ==================================================
 
+# IMPORTANT:
+# Use your real BotFather token here.
+# If this token has already been shared publicly,
+# generate a new token from BotFather.
 BOT_TOKEN = "8274446621:AAH6ItCjsHzle6GebZsGGHSbmGqyfRE7S0I"
 
 
+# Your GitHub Pages Mini App URL
 MINI_APP_URL = (
     "https://chanrathsn.github.io/"
     "Jisoo_Booking/"
@@ -36,193 +39,166 @@ MINI_APP_URL = (
 )
 
 
-# ==========================================
-# PRODUCT CATALOG
-# ==========================================
+# ==================================================
+# PROJECT FOLDERS
+# ==================================================
+
+# Current file:
+#
+# Jisoo_Booking/
+# └── backend/
+#     └── bot.py
+#
+# Parent folder:
+#
+# Jisoo_Booking/
+#
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+# PDF output folder:
+#
+# Jisoo_Booking/
+# └── out/
+#
+OUT_DIR = BASE_DIR / "out"
+
+
+# Automatically create the out folder
+OUT_DIR.mkdir(
+    parents=True,
+    exist_ok=True
+)
+
+
+# ==================================================
+# AQUALIFE PRODUCT CATALOG
+# ==================================================
 
 PRODUCT_CATALOG = {
 
-
     "SU-G": {
-
         "name": "SAENG SU (TT)",
-
         "price": 449
-
     },
-
 
     "SU(FS)-G": {
-
         "name": "SAENG SU (FS)",
-
         "price": 499
-
     },
-
 
     "MNL(FS)-W": {
-
         "name": "MNL(FS) - WHITE",
-
         "price": 799
-
     },
-
 
     "SC": {
-
         "name": "SUPER COOLING",
-
         "price": 1188
-
     },
-
 
     "JS-V3": {
-
         "name": "JICO",
-
         "price": 219
-
     },
-
 
     "RKT5000": {
-
         "name": "ROKKET 5000",
-
         "price": 399
-
     },
-
 
     "RKT8000": {
-
         "name": "ROKKET 8000",
-
         "price": 449
-
     },
-
 
     "RKT10000": {
-
         "name": "ROKKET 10000",
-
         "price": 549
-
     },
-
 
     "CANNON": {
-
         "name": "CANNON",
-
         "price": 249
-
     },
-
 
     "JS-VT": {
-
         "name": "TRICO",
-
         "price": 219
-
     },
-
 
     "MINI-S (HWC)": {
-
-        "name": "MINI-S(HWC)",
-
+        "name": "MINI-S (HWC)",
         "price": 1188
-
     },
-
 
     "MINI-S (HW)": {
-
-        "name": "MINI-S(HW)",
-
+        "name": "MINI-S (HW)",
         "price": 1188
-
     },
 
-
     "JS-V2": {
-
         "name": "NOVA",
-
         "price": 199
-
     }
 
 }
 
 
-# ==========================================
+# ==================================================
 # BOT SETUP
-# ==========================================
+# ==================================================
 
 bot = Bot(
-
     token=BOT_TOKEN
-
 )
-
 
 dp = Dispatcher()
 
 
-# ==========================================
-# FORMAT PRICE
-# ==========================================
+# ==================================================
+# PRICE FORMAT
+# ==================================================
 
 def format_price(
-
     amount
-
 ):
 
-
     return (
-
         f"${amount:,.2f}"
-
     )
 
 
-# ==========================================
-# CREATE SAMPLE RECEIPT PDF
-# ==========================================
+# ==================================================
+# CREATE PDF RECEIPT
+# ==================================================
 
 def create_sample_receipt(
-
     customer_name,
-
     products,
-
     total,
-
     order_number
-
 ):
 
+    # Save PDF inside:
+    #
+    # Jisoo_Booking/out/
+    #
+    pdf_path = (
 
-    filename = (
+        OUT_DIR /
 
         f"sample_receipt_"
-
         f"{order_number}.pdf"
 
     )
 
 
+    # Create PDF
+
     pdf = canvas.Canvas(
 
-        filename,
+        str(pdf_path),
 
         pagesize=A4
 
@@ -235,7 +211,9 @@ def create_sample_receipt(
     y = height - 50
 
 
+    # ==============================================
     # HEADER
+    # ==============================================
 
     pdf.setFont(
 
@@ -283,7 +261,9 @@ def create_sample_receipt(
     y -= 40
 
 
-    # CUSTOMER INFO
+    # ==============================================
+    # CUSTOMER INFORMATION
+    # ==============================================
 
     pdf.setFont(
 
@@ -332,7 +312,8 @@ def create_sample_receipt(
 
             "Date: "
 
-            f"{datetime.now().strftime('%Y-%m-%d %H:%M')}"
+            f"{datetime.now().strftime("
+            "'%Y-%m-%d %H:%M')"
 
         )
 
@@ -342,7 +323,9 @@ def create_sample_receipt(
     y -= 35
 
 
+    # ==============================================
     # TABLE HEADER
+    # ==============================================
 
     pdf.setFont(
 
@@ -416,7 +399,9 @@ def create_sample_receipt(
     y -= 20
 
 
+    # ==============================================
     # PRODUCTS
+    # ==============================================
 
     pdf.setFont(
 
@@ -476,7 +461,7 @@ def create_sample_receipt(
 
             y,
 
-            f"${price:,.2f}"
+            format_price(price)
 
         )
 
@@ -487,13 +472,17 @@ def create_sample_receipt(
 
             y,
 
-            f"${item_total:,.2f}"
+            format_price(item_total)
 
         )
 
 
         y -= 20
 
+
+    # ==============================================
+    # TOTAL
+    # ==============================================
 
     y -= 15
 
@@ -513,8 +502,6 @@ def create_sample_receipt(
 
     y -= 30
 
-
-    # TOTAL
 
     pdf.setFont(
 
@@ -542,7 +529,7 @@ def create_sample_receipt(
 
         y,
 
-        f"${total:,.2f}"
+        format_price(total)
 
     )
 
@@ -550,7 +537,9 @@ def create_sample_receipt(
     y -= 50
 
 
-    # NOTE
+    # ==============================================
+    # FOOTER
+    # ==============================================
 
     pdf.setFont(
 
@@ -586,15 +575,17 @@ def create_sample_receipt(
     )
 
 
+    # Save PDF
+
     pdf.save()
 
 
-    return filename
+    return pdf_path
 
 
-# ==========================================
-# START COMMAND
-# ==========================================
+# ==================================================
+# /START COMMAND
+# ==================================================
 
 @dp.message(
 
@@ -648,17 +639,13 @@ async def cmd_start(
 
             "! 👋\n\n"
 
-            "Welcome to the "
+            "Welcome to AquaLife Cambodia 💧\n\n"
 
-            "AquaLife Product Store 💧\n\n"
+            "Choose your products, "
 
-            "Choose products, add them "
+            "add them to your cart, "
 
-            "to your cart, and confirm "
-
-            "your order.\n\n"
-
-            "Tap below to start shopping:"
+            "and confirm your order."
 
         ),
 
@@ -667,9 +654,9 @@ async def cmd_start(
     )
 
 
-# ==========================================
-# RECEIVE ORDER
-# ==========================================
+# ==================================================
+# RECEIVE ORDER FROM MINI APP
+# ==================================================
 
 @dp.message(
 
@@ -684,13 +671,12 @@ async def handle_mini_app_data(
 ):
 
 
-    pdf_file = None
-
-
     try:
 
 
-        # READ DATA
+        # ==========================================
+        # READ DATA FROM MINI APP
+        # ==========================================
 
         raw_data = (
 
@@ -732,7 +718,9 @@ async def handle_mini_app_data(
             return
 
 
-        # CUSTOMER
+        # ==========================================
+        # CUSTOMER INFORMATION
+        # ==========================================
 
         customer_name = (
 
@@ -752,7 +740,9 @@ async def handle_mini_app_data(
         )
 
 
+        # ==========================================
         # ORDER NUMBER
+        # ==========================================
 
         order_number = (
 
@@ -765,7 +755,9 @@ async def handle_mini_app_data(
         )
 
 
-        # CALCULATE TOTAL
+        # ==========================================
+        # CALCULATE ORDER
+        # ==========================================
 
         calculated_total = 0
 
@@ -773,10 +765,10 @@ async def handle_mini_app_data(
         calculated_items = 0
 
 
-        order_lines = []
-
-
         verified_products = []
+
+
+        order_lines = []
 
 
         for item in products:
@@ -806,6 +798,8 @@ async def handle_mini_app_data(
             )
 
 
+            # Find product from our official catalog
+
             product = (
 
                 PRODUCT_CATALOG.get(
@@ -823,15 +817,23 @@ async def handle_mini_app_data(
                 continue
 
 
-            name = product["name"]
+            product_name = (
+
+                product["name"]
+
+            )
 
 
-            price = product["price"]
+            product_price = (
+
+                product["price"]
+
+            )
 
 
             item_total = (
 
-                price *
+                product_price *
 
                 quantity
 
@@ -858,9 +860,9 @@ async def handle_mini_app_data(
 
                     "id": product_id,
 
-                    "name": name,
+                    "name": product_name,
 
-                    "price": price,
+                    "price": product_price,
 
                     "quantity": quantity,
 
@@ -875,7 +877,7 @@ async def handle_mini_app_data(
 
                 (
 
-                    f"• <b>{name}</b>\n"
+                    f"• <b>{product_name}</b>\n"
 
                     f"  Code: {product_id}\n"
 
@@ -883,7 +885,7 @@ async def handle_mini_app_data(
 
                     f"  Unit Price: "
 
-                    f"{format_price(price)}\n"
+                    f"{format_price(product_price)}\n"
 
                     f"  Total: "
 
@@ -907,7 +909,9 @@ async def handle_mini_app_data(
             return
 
 
-        # SUMMARY
+        # ==========================================
+        # CREATE ORDER SUMMARY
+        # ==========================================
 
         order_summary = (
 
@@ -931,13 +935,13 @@ async def handle_mini_app_data(
         )
 
 
-        # SEND ORDER TEXT
+        # ==========================================
+        # SEND ORDER DETAILS TO TELEGRAM
+        # ==========================================
 
         response_message = (
 
-            "🛒 <b>NEW CUSTOMER ORDER</b>\n"
-
-            "\n"
+            "🛒 <b>NEW CUSTOMER ORDER</b>\n\n"
 
             f"🧾 <b>Order No:</b> "
 
@@ -953,15 +957,11 @@ async def handle_mini_app_data(
 
             f"🕒 <b>Time:</b> "
 
-            f"{order_time}\n"
-
-            "\n"
+            f"{order_time}\n\n"
 
             "📦 <b>ORDER DETAILS</b>\n\n"
 
-            f"{order_summary}\n"
-
-            "\n"
+            f"{order_summary}\n\n"
 
             "━━━━━━━━━━━━━━\n"
 
@@ -985,26 +985,34 @@ async def handle_mini_app_data(
         )
 
 
-        # CREATE PDF
+        # ==========================================
+        # CREATE PDF IN OUT FOLDER
+        # ==========================================
 
-        pdf_file = create_sample_receipt(
+        pdf_path = (
 
-            customer_name,
+            create_sample_receipt(
 
-            verified_products,
+                customer_name,
 
-            calculated_total,
+                verified_products,
 
-            order_number
+                calculated_total,
+
+                order_number
+
+            )
 
         )
 
 
-        # SEND PDF
+        # ==========================================
+        # SEND PDF TO TELEGRAM
+        # ==========================================
 
         document = FSInputFile(
 
-            pdf_file
+            str(pdf_path)
 
         )
 
@@ -1015,25 +1023,28 @@ async def handle_mini_app_data(
 
             caption=(
 
-                "🧾 <b>Sample Receipt Generated</b>\n\n"
+                "🧾 <b>SAMPLE RECEIPT</b>\n\n"
 
                 f"Order No: "
 
-                f"{order_number}\n"
+                f"{order_number}\n\n"
 
-                "\n"
+                "The PDF was generated "
 
-                "This is a sample receipt "
-
-                "for order reference.\n"
-
-                "The official invoice can be "
-
-                "customized and issued later."
+                "automatically from your order."
 
             ),
 
             parse_mode="HTML"
+
+        )
+
+
+        print(
+
+            "\nPDF SAVED TO:\n"
+
+            f"{pdf_path}\n"
 
         )
 
@@ -1060,7 +1071,7 @@ async def handle_mini_app_data(
 
         logging.exception(
 
-            f"Order processing error: "
+            f"Error processing order: "
 
             f"{error}"
 
@@ -1069,35 +1080,20 @@ async def handle_mini_app_data(
 
         await message.answer(
 
-            "❌ Error processing your order."
+            (
+
+                "❌ Error processing your order.\n\n"
+
+                f"Error: {error}"
+
+            )
 
         )
 
 
-    finally:
-
-
-        # DELETE TEMPORARY PDF
-
-        if (
-
-            pdf_file and
-
-            os.path.exists(pdf_file)
-
-        ):
-
-
-            os.remove(
-
-                pdf_file
-
-            )
-
-
-# ==========================================
-# MAIN
-# ==========================================
+# ==================================================
+# MAIN RUNNER
+# ==================================================
 
 async def main():
 
@@ -1109,6 +1105,8 @@ async def main():
     )
 
 
+    # Remove old pending Telegram updates
+
     await bot.delete_webhook(
 
         drop_pending_updates=True
@@ -1118,7 +1116,7 @@ async def main():
 
     print(
 
-        "==================================="
+        "===================================="
 
     )
 
@@ -1132,7 +1130,14 @@ async def main():
 
     print(
 
-        "==================================="
+        "===================================="
+
+    )
+
+
+    print(
+
+        f"PDF folder: {OUT_DIR}"
 
     )
 
@@ -1144,9 +1149,9 @@ async def main():
     )
 
 
-# ==========================================
+# ==================================================
 # START BOT
-# ==========================================
+# ==================================================
 
 if __name__ == "__main__":
 

@@ -1,1127 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width,
-    initial-scale=1.0,
-    maximum-scale=1.0,
-    user-scalable=no"
-  >
-
-  <title>AquaLife Store</title>
-
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-  <style>
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Roboto,
-        Arial,
-        sans-serif;
-
-      background:
-        var(--tg-theme-bg-color, #f5f7fa);
-
-      color:
-        var(--tg-theme-text-color, #000000);
-
-      padding: 16px;
-
-      padding-bottom: 100px;
-    }
-
-    .header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .header h1 {
-      color: #0057B8;
-      font-size: 25px;
-      font-weight: 800;
-    }
-
-    .header p {
-      color: #777;
-      font-size: 13px;
-      margin-top: 5px;
-    }
-
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px 12px;
-    }
-
-    .product-card {
-      background: white;
-      border-radius: 14px;
-      padding: 10px;
-      box-shadow:
-        0 2px 8px
-        rgba(0, 0, 0, 0.10);
-
-      text-align: center;
-    }
-
-    .product-image {
-      width: 100%;
-      height: 110px;
-      object-fit: contain;
-      margin-bottom: 8px;
-    }
-
-    .product-code {
-      color: #777;
-      font-size: 10px;
-      margin-bottom: 4px;
-    }
-
-    .product-name {
-      font-size: 14px;
-      font-weight: 700;
-      min-height: 38px;
-    }
-
-    .product-price {
-      color: #0057B8;
-      font-size: 17px;
-      font-weight: 800;
-      margin: 8px 0 10px;
-    }
-
-    .add-button {
-      width: 100%;
-      padding: 9px;
-      border: none;
-      border-radius: 9px;
-      background: #0057B8;
-      color: white;
-      font-size: 13px;
-      font-weight: bold;
-    }
-
-    .quantity-control {
-      display: none;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .quantity-button {
-      width: 34px;
-      height: 34px;
-      border: none;
-      border-radius: 8px;
-      background: #0057B8;
-      color: white;
-      font-size: 20px;
-      font-weight: bold;
-    }
-
-    .quantity-number {
-      font-size: 16px;
-      font-weight: bold;
-    }
-
-    .cart-bar {
-      display: none;
-
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-
-      padding: 12px 16px;
-
-      background: white;
-
-      box-shadow:
-        0 -2px 10px
-        rgba(0, 0, 0, 0.15);
-
-      z-index: 10;
-    }
-
-    .cart-button {
-      width: 100%;
-      padding: 14px;
-
-      border: none;
-      border-radius: 10px;
-
-      background: #31b545;
-      color: white;
-
-      font-size: 16px;
-      font-weight: bold;
-    }
-
-    .modal {
-      display: none;
-
-      position: fixed;
-
-      inset: 0;
-
-      background:
-        rgba(0, 0, 0, 0.55);
-
-      align-items: flex-end;
-
-      justify-content: center;
-
-      z-index: 20;
-    }
-
-    .modal-content {
-      width: 100%;
-
-      max-height: 85vh;
-
-      overflow-y: auto;
-
-      background: white;
-
-      border-radius:
-        18px 18px 0 0;
-
-      padding: 20px;
-    }
-
-    .modal-title {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 15px;
-    }
-
-    .cart-item {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-
-      padding: 12px 0;
-
-      border-bottom:
-        1px solid #eeeeee;
-    }
-
-    .cart-item-name {
-      font-weight: bold;
-    }
-
-    .cart-item-details {
-      color: #777;
-      font-size: 12px;
-      margin-top: 4px;
-    }
-
-    .cart-item-total {
-      font-weight: bold;
-      white-space: nowrap;
-    }
-
-    .cart-total {
-      display: flex;
-      justify-content: space-between;
-
-      font-size: 18px;
-      font-weight: bold;
-
-      padding: 18px 0;
-    }
-
-    .modal-buttons {
-      display: flex;
-      gap: 10px;
-    }
-
-    .close-button,
-    .confirm-button {
-      flex: 1;
-
-      padding: 13px;
-
-      border: none;
-      border-radius: 10px;
-
-      font-weight: bold;
-    }
-
-    .close-button {
-      background: #eeeeee;
-      color: #333;
-    }
-
-    .confirm-button {
-      background: #0057B8;
-      color: white;
-    }
-
-  </style>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AquaLife Store</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--tg-theme-bg-color,#fff);color:var(--tg-theme-text-color,#000);padding:16px 16px 90px}
+.header{text-align:center;margin-bottom:20px}
+.header h1{font-size:24px;color:#0077c8}
+.header p{font-size:13px;opacity:.7;margin-top:4px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px 14px}
+.card{text-align:center;display:flex;flex-direction:column;align-items:center}
+.image{width:120px;height:120px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;background:#f5f7f9;overflow:hidden}
+.image img{max-width:100%;max-height:100%;object-fit:contain}
+.product-code{font-size:12px;color:#0077c8;font-weight:700}
+.name{font-size:14px;font-weight:600;min-height:38px;margin-top:3px}
+.price{font-size:15px;font-weight:700;margin:5px 0 9px}
+.add{width:100%;max-width:130px;padding:9px;background:#0077c8;color:#fff;border:0;border-radius:9px;font-weight:700;font-size:14px}
+.counter{display:none;width:100%;max-width:130px;align-items:center;justify-content:space-between}
+.counter button{width:36px;height:36px;border:0;border-radius:8px;background:#0077c8;color:#fff;font-size:20px;font-weight:bold}
+.qty{font-size:16px;font-weight:bold}
+</style>
 </head>
-
 <body>
-
-  <div class="header">
-
-    <h1>AQUALIFE</h1>
-
-    <p>
-      Water Purification Products
-    </p>
-
-  </div>
-
-
-  <div
-    id="productGrid"
-    class="product-grid"
-  ></div>
-
-
-  <div
-    id="cartBar"
-    class="cart-bar"
-  >
-
-    <button
-      class="cart-button"
-      onclick="openCart()"
-    >
-
-      🛒 VIEW CART
-
-      (<span id="cartCount">0</span>)
-
-    </button>
-
-  </div>
-
-
-  <div
-    id="cartModal"
-    class="modal"
-  >
-
-    <div
-      class="modal-content"
-    >
-
-      <div
-        class="modal-title"
-      >
-
-        🛒 Your Cart
-
-      </div>
-
-
-      <div
-        id="cartItems"
-      ></div>
-
-
-      <div
-        class="cart-total"
-      >
-
-        <span>
-          TOTAL
-        </span>
-
-        <span
-          id="grandTotal"
-        >
-          $0.00
-        </span>
-
-      </div>
-
-
-      <div
-        class="modal-buttons"
-      >
-
-        <button
-          class="close-button"
-          onclick="closeCart()"
-        >
-
-          CLOSE
-
-        </button>
-
-
-        <button
-          class="confirm-button"
-          onclick="confirmOrder()"
-        >
-
-          CONFIRM ORDER
-
-        </button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <script>
-
-    // ==========================================
-    // TELEGRAM
-    // ==========================================
-
-    const tg =
-      window.Telegram.WebApp;
-
-
-    tg.ready();
-
-
-    tg.expand();
-
-
-    // ==========================================
-    // PRODUCTS
-    // ==========================================
-
-    const products = [
-
-      {
-        id: "SU-G",
-        name: "SAENG SU (TT)",
-        price: 449
-      },
-
-      {
-        id: "SU(FS)-G",
-        name: "SAENG SU (FS)",
-        price: 499
-      },
-
-      {
-        id: "MNL(FS)-W",
-        name: "MNL(FS) - WHITE",
-        price: 799
-      },
-
-      {
-        id: "SC",
-        name: "SUPER COOLING",
-        price: 1188
-      },
-
-      {
-        id: "JS-V3",
-        name: "JICO",
-        price: 219
-      },
-
-      {
-        id: "RKT5000",
-        name: "ROKKET 5000",
-        price: 399
-      },
-
-      {
-        id: "RKT8000",
-        name: "ROKKET 8000",
-        price: 449
-      },
-
-      {
-        id: "RKT10000",
-        name: "ROKKET 10000",
-        price: 549
-      },
-
-      {
-        id: "CANNON",
-        name: "CANNON",
-        price: 249
-      },
-
-      {
-        id: "JS-VT",
-        name: "TRICO",
-        price: 219
-      },
-
-      {
-        id: "MINI-S (HWC)",
-        name: "MINI-S (HWC)",
-        price: 1188
-      },
-
-      {
-        id: "MINI-S (HW)",
-        name: "MINI-S (HW)",
-        price: 1188
-      },
-
-      {
-        id: "JS-V2",
-        name: "NOVA",
-        price: 199
-      }
-
-    ];
-
-
-    // ==========================================
-    // CART
-    // ==========================================
-
-    let cart = {};
-
-
-    // ==========================================
-    // FORMAT PRICE
-    // ==========================================
-
-    function formatPrice(
-      price
-    ) {
-
-      return "$" +
-
-        price.toLocaleString(
-          "en-US",
-          {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-          }
-        );
-
-    }
-
-
-    // ==========================================
-    // DISPLAY PRODUCTS
-    // ==========================================
-
-    function displayProducts() {
-
-      const grid =
-        document.getElementById(
-          "productGrid"
-        );
-
-
-      products.forEach(
-
-        product => {
-
-          const card =
-            document.createElement(
-              "div"
-            );
-
-
-          card.className =
-            "product-card";
-
-
-          card.innerHTML = `
-
-            <img
-              class="product-image"
-              src="https://via.placeholder.com/150"
-              alt="${product.name}"
-            >
-
-            <div
-              class="product-code"
-            >
-              ${product.id}
+<div class="header">
+<h1>AquaLife Store 💧</h1>
+<p>Select products and quantity</p>
+</div>
+<div class="grid" id="productGrid"></div>
+
+<script>
+const tg = window.Telegram.WebApp;
+tg.ready();
+tg.expand();
+
+const products = [
+{id:"1",code:"SU-G",name:"SAENG SU (TT)",price:449},
+{id:"2",code:"SU(FS)-G",name:"SAENG SU (FS)",price:499},
+{id:"3",code:"MNL(FS)-W",name:"MNL(FS) - WHITE",price:799},
+{id:"4",code:"SC",name:"SUPER COOLING",price:1188},
+{id:"5",code:"JS-V3",name:"JICO",price:219},
+{id:"6",code:"RKT5000",name:"ROKKET 5000",price:399},
+{id:"7",code:"RKT8000",name:"ROKKET 8000",price:449},
+{id:"8",code:"RKT10000",name:"ROKKET 10000",price:549},
+{id:"9",code:"CANNON",name:"CANNON",price:249},
+{id:"10",code:"JS-VT",name:"TRICO",price:219},
+{id:"11",code:"MINI-S (HWC)",name:"MINI-S (HWC)",price:1188},
+{id:"12",code:"MINI-S (HW)",name:"MINI-S (HW)",price:1188},
+{id:"13",code:"JS-V2",name:"NOVA",price:199}
+];
+
+const cart = {};
+
+function renderProducts(){
+    const grid = document.getElementById("productGrid");
+    grid.innerHTML = products.map(p => `
+        <div class="card" id="card-${p.id}">
+            <div class="image">
+                <div style="font-size:42px">💧</div>
             </div>
-
-            <div
-              class="product-name"
-            >
-              ${product.name}
+            <div class="product-code">${p.code}</div>
+            <div class="name">${p.name}</div>
+            <div class="price">$${p.price.toLocaleString()}</div>
+            <button class="add" id="add-${p.id}" onclick="addToCart('${p.id}')">ADD</button>
+            <div class="counter" id="counter-${p.id}">
+                <button onclick="changeQty('${p.id}',-1)">−</button>
+                <span class="qty" id="qty-${p.id}">1</span>
+                <button onclick="changeQty('${p.id}',1)">+</button>
             </div>
+        </div>
+    `).join("");
+}
 
-            <div
-              class="product-price"
-            >
-              ${formatPrice(
-                product.price
-              )}
-            </div>
+function addToCart(id){
+    cart[id] = 1;
+    updateCard(id);
+    updateMainButton();
+}
 
-            <button
-              class="add-button"
-              id="add-${product.id}"
-              onclick="addToCart('${product.id}')"
-            >
-              ADD TO CART
-            </button>
+function changeQty(id, delta){
+    cart[id] = (cart[id] || 0) + delta;
+    if(cart[id] <= 0) delete cart[id];
+    updateCard(id);
+    updateMainButton();
+}
 
-            <div
-              class="quantity-control"
-              id="qty-${product.id}"
-            >
+function updateCard(id){
+    const add = document.getElementById(`add-${id}`);
+    const counter = document.getElementById(`counter-${id}`);
+    const qty = document.getElementById(`qty-${id}`);
 
-              <button
-                class="quantity-button"
-                onclick="changeQuantity(
-                  '${product.id}',
-                  -1
-                )"
-              >
-                −
-              </button>
-
-              <span
-                class="quantity-number"
-                id="number-${product.id}"
-              >
-                0
-              </span>
-
-              <button
-                class="quantity-button"
-                onclick="changeQuantity(
-                  '${product.id}',
-                  1
-                )"
-              >
-                +
-              </button>
-
-            </div>
-
-          `;
-
-
-          grid.appendChild(
-            card
-          );
-
-        }
-
-      );
-
+    if(cart[id]){
+        add.style.display = "none";
+        counter.style.display = "flex";
+        qty.textContent = cart[id];
+    }else{
+        add.style.display = "block";
+        counter.style.display = "none";
     }
+}
 
+function getOrderData(){
+    return {
+        products: Object.entries(cart).map(([id, quantity]) => ({
+            id: String(id),
+            quantity: Number(quantity)
+        }))
+    };
+}
 
-    // ==========================================
-    // ADD TO CART
-    // ==========================================
+function updateMainButton(){
+    const totalItems = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
 
-    function addToCart(
-      id
-    ) {
-
-      cart[id] =
-        (
-          cart[id] || 0
-        ) + 1;
-
-
-      updateProductUI(
-        id
-      );
-
-
-      updateCartBar();
-
+    if(totalItems > 0){
+        tg.MainButton.setText(`VIEW ORDER (${totalItems})`);
+        tg.MainButton.setParams({
+            color:"#0077c8",
+            text_color:"#ffffff",
+            is_active:true
+        });
+        tg.MainButton.show();
+    }else{
+        tg.MainButton.hide();
     }
+}
 
+tg.MainButton.onClick(() => {
+    const orderData = getOrderData();
 
-    // ==========================================
-    // CHANGE QUANTITY
-    // ==========================================
-
-    function changeQuantity(
-      id,
-      amount
-    ) {
-
-      cart[id] =
-        (
-          cart[id] || 0
-        ) + amount;
-
-
-      if (
-        cart[id] <= 0
-      ) {
-
-        delete cart[id];
-
-      }
-
-
-      updateProductUI(
-        id
-      );
-
-
-      updateCartBar();
-
-    }
-
-
-    // ==========================================
-    // UPDATE PRODUCT
-    // ==========================================
-
-    function updateProductUI(
-      id
-    ) {
-
-      const addButton =
-        document.getElementById(
-          `add-${id}`
-        );
-
-
-      const quantityControl =
-        document.getElementById(
-          `qty-${id}`
-        );
-
-
-      const quantityNumber =
-        document.getElementById(
-          `number-${id}`
-        );
-
-
-      const quantity =
-        cart[id] || 0;
-
-
-      if (
-        quantity > 0
-      ) {
-
-        addButton.style.display =
-          "none";
-
-
-        quantityControl.style.display =
-          "flex";
-
-
-        quantityNumber.textContent =
-          quantity;
-
-      }
-
-      else {
-
-        addButton.style.display =
-          "block";
-
-
-        quantityControl.style.display =
-          "none";
-
-
-        quantityNumber.textContent =
-          "0";
-
-      }
-
-    }
-
-
-    // ==========================================
-    // TOTAL ITEMS
-    // ==========================================
-
-    function getTotalItems() {
-
-      return Object.values(
-        cart
-      ).reduce(
-
-        (
-          total,
-          quantity
-        ) => total + quantity,
-
-        0
-
-      );
-
-    }
-
-
-    // ==========================================
-    // TOTAL PRICE
-    // ==========================================
-
-    function getGrandTotal() {
-
-      return Object.entries(
-        cart
-      ).reduce(
-
-        (
-          total,
-          [
-            productId,
-            quantity
-          ]
-        ) => {
-
-          const product =
-            products.find(
-
-              item =>
-                item.id ===
-                productId
-
-            );
-
-
-          return total +
-
-            (
-              product.price *
-              quantity
-
-            );
-
-        },
-
-        0
-
-      );
-
-    }
-
-
-    // ==========================================
-    // UPDATE CART BAR
-    // ==========================================
-
-    function updateCartBar() {
-
-      const totalItems =
-        getTotalItems();
-
-
-      const cartBar =
-        document.getElementById(
-          "cartBar"
-        );
-
-
-      document.getElementById(
-        "cartCount"
-      ).textContent =
-        totalItems;
-
-
-      if (
-        totalItems > 0
-      ) {
-
-        cartBar.style.display =
-          "block";
-
-      }
-
-      else {
-
-        cartBar.style.display =
-          "none";
-
-      }
-
-    }
-
-
-    // ==========================================
-    // OPEN CART
-    // ==========================================
-
-    function openCart() {
-
-      const cartItems =
-        document.getElementById(
-          "cartItems"
-        );
-
-
-      cartItems.innerHTML =
-        "";
-
-
-      Object.entries(
-        cart
-      ).forEach(
-
-        (
-          [
-            productId,
-            quantity
-          ]
-        ) => {
-
-          const product =
-            products.find(
-
-              item =>
-                item.id ===
-                productId
-
-            );
-
-
-          const itemTotal =
-            product.price *
-            quantity;
-
-
-          const itemElement =
-            document.createElement(
-              "div"
-            );
-
-
-          itemElement.className =
-            "cart-item";
-
-
-          itemElement.innerHTML = `
-
-            <div>
-
-              <div
-                class="cart-item-name"
-              >
-                ${product.name}
-              </div>
-
-              <div
-                class="cart-item-details"
-              >
-
-                ${product.id}
-
-                ·
-
-                ${formatPrice(
-                  product.price
-                )}
-
-                ×
-
-                ${quantity}
-
-              </div>
-
-            </div>
-
-            <div
-              class="cart-item-total"
-            >
-
-              ${formatPrice(
-                itemTotal
-              )}
-
-            </div>
-
-          `;
-
-
-          cartItems.appendChild(
-            itemElement
-          );
-
-        }
-
-      );
-
-
-      document.getElementById(
-        "grandTotal"
-      ).textContent =
-        formatPrice(
-          getGrandTotal()
-        );
-
-
-      document.getElementById(
-        "cartModal"
-      ).style.display =
-        "flex";
-
-    }
-
-
-    // ==========================================
-    // CLOSE CART
-    // ==========================================
-
-    function closeCart() {
-
-      document.getElementById(
-        "cartModal"
-      ).style.display =
-        "none";
-
-    }
-
-
-    // ==========================================
-    // CONFIRM ORDER
-    // ==========================================
-
-    function confirmOrder() {
-
-      const totalItems =
-        getTotalItems();
-
-
-      if (
-        totalItems === 0
-      ) {
-
-        alert(
-          "Your cart is empty."
-        );
-
+    if(!orderData.products.length){
+        tg.showAlert("Please select at least one product.");
         return;
-
-      }
-
-
-      // Create order
-
-      const order = {
-
-        products:
-
-          Object.entries(
-            cart
-          ).map(
-
-            (
-              [
-                productId,
-                quantity
-              ]
-            ) => {
-
-              const product =
-                products.find(
-
-                  item =>
-                    item.id ===
-                    productId
-
-                );
-
-
-              return {
-
-                id:
-                  product.id,
-
-                name:
-                  product.name,
-
-                price:
-                  product.price,
-
-                quantity:
-                  quantity,
-
-                total:
-                  product.price *
-                  quantity
-
-              };
-
-            }
-
-          ),
-
-        total_items:
-          totalItems,
-
-        grand_total:
-          getGrandTotal()
-
-      };
-
-
-      // DEBUG
-
-      console.log(
-        "ORDER TO SEND:",
-        order
-      );
-
-
-      // Make sure Telegram is ready
-
-      tg.ready();
-
-
-      // Send order to bot
-
-      tg.sendData(
-
-        JSON.stringify(
-          order
-        )
-
-      );
-
-
-      // Close Mini App
-
-      setTimeout(
-
-        () => {
-
-          tg.close();
-
-        },
-
-        500
-
-      );
-
     }
 
+    console.log("SENDING ORDER:", JSON.stringify(orderData));
 
-    // ==========================================
-    // START
-    // ==========================================
+    tg.MainButton.showProgress();
 
-    displayProducts();
+    tg.sendData(JSON.stringify(orderData));
+});
 
-  </script>
-
+renderProducts();
+updateMainButton();
+</script>
 </body>
-
 </html>

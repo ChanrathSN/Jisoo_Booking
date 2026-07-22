@@ -31,9 +31,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 .review-item-qty{font-size:12px;color:#666}
 .review-item-price{font-weight:700;font-size:14px}
 .modal-total{display:flex;justify-content:space-between;font-size:18px;font-weight:800;padding:12px 0;border-top:2px solid #0077c8;margin-top:10px}
-.modal-actions{display:flex;gap:10px}
-.btn-cancel{flex:1;padding:12px;background:#e5e5e5;color:#333;border:0;border-radius:10px;font-weight:700;cursor:pointer}
-.btn-submit{flex:1;padding:12px;background:#0077c8;color:#fff;border:0;border-radius:10px;font-weight:700;cursor:pointer}
+.modal-actions{display:flex;flex-direction:column;gap:8px}
+.modal-actions-row{display:flex;gap:8px}
+.btn-clear{width:100%;padding:10px;background:#e74c3c;color:#fff;border:0;border-radius:8px;font-weight:700;cursor:pointer}
+.btn-cancel{flex:1;padding:12px;background:#e5e5e5;color:#333;border:0;border-radius:8px;font-weight:700;cursor:pointer}
+.btn-submit{flex:1;padding:12px;background:#0077c8;color:#fff;border:0;border-radius:8px;font-weight:700;cursor:pointer}
 </style>
 </head>
 <body>
@@ -54,8 +56,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
       <span id="modalGrandTotal">$0.00</span>
     </div>
     <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal()">Edit Order</button>
-      <button class="btn-submit" onclick="submitOrder()">Confirm & Submit</button>
+      <div class="modal-actions-row">
+        <button class="btn-cancel" onclick="closeModal()">Edit Order</button>
+        <button class="btn-submit" onclick="submitOrder()">Submit Order</button>
+      </div>
+      <button class="btn-clear" onclick="clearCart()">🗑️ Clear Cart</button>
     </div>
   </div>
 </div>
@@ -66,19 +71,19 @@ tg.ready();
 tg.expand();
 
 const products = [
-{id:"1",code:"SU-G",name:"SAENG SU (TT)",price:449},
-{id:"2",code:"SU(FS)-G",name:"SAENG SU (FS)",price:499},
-{id:"3",code:"MNL(FS)-W",name:"MNL(FS) - WHITE",price:799},
-{id:"4",code:"SC",name:"SUPER COOLING",price:1188},
-{id:"5",code:"JS-V3",name:"JICO",price:219},
-{id:"6",code:"RKT5000",name:"ROKKET 5000",price:399},
-{id:"7",code:"RKT8000",name:"ROKKET 8000",price:449},
-{id:"8",code:"RKT10000",name:"ROKKET 10000",price:549},
-{id:"9",code:"CANNON",name:"CANNON",price:249},
-{id:"10",code:"JS-VT",name:"TRICO",price:219},
-{id:"11",code:"MINI-S (HWC)",name:"MINI-S (HWC)",price:1188},
-{id:"12",code:"MINI-S (HW)",name:"MINI-S (HW)",price:1188},
-{id:"13",code:"JS-V2",name:"NOVA",price:199}
+{id:"1",name:"SAENG SU (TT)",price:449},
+{id:"2",name:"SAENG SU (FS)",price:499},
+{id:"3",name:"MNL(FS) - WHITE",price:799},
+{id:"4",name:"SUPER COOLING",price:1188},
+{id:"5",name:"JICO",price:219},
+{id:"6",name:"ROKKET 5000",price:399},
+{id:"7",name:"ROKKET 8000",price:449},
+{id:"8",name:"ROKKET 10000",price:549},
+{id:"9",name:"CANNON",price:249},
+{id:"10",name:"TRICO",price:219},
+{id:"11",name:"MINI-S (HWC)",price:1188},
+{id:"12",name:"MINI-S (HW)",price:1188},
+{id:"13",name:"NOVA",price:199}
 ];
 
 const cart = {};
@@ -90,10 +95,9 @@ function renderProducts(){
             <div class="image">
                 <div style="font-size:42px">💧</div>
             </div>
-            <!-- Displaying only product name -->
             <div class="name">${p.name}</div>
             <div class="price">$${p.price.toLocaleString()}</div>
-            <button class="add" id="add-${p.id}" onclick="addToCart('${p.id}')">ADD</button>
+            <button class="add" id="add-${p.id}" onclick="addToCart('${p.id}')">ADD TO CART</button>
             <div class="counter" id="counter-${p.id}">
                 <button onclick="changeQty('${p.id}',-1)">−</button>
                 <span class="qty" id="qty-${p.id}">1</span>
@@ -135,7 +139,7 @@ function updateMainButton(){
     const totalItems = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
 
     if(totalItems > 0){
-        tg.MainButton.setText(`VIEW ORDER (${totalItems})`);
+        tg.MainButton.setText(`VIEW CART (${totalItems})`);
         tg.MainButton.setParams({
             color:"#0077c8",
             text_color:"#ffffff",
@@ -180,6 +184,12 @@ function openModal(){
 function closeModal(){
     document.getElementById("reviewModal").style.display = "none";
     updateMainButton();
+}
+
+function clearCart(){
+    Object.keys(cart).forEach(id => delete cart[id]);
+    products.forEach(p => updateCard(p.id));
+    closeModal();
 }
 
 function getOrderData(){

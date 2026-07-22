@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
   <meta charset="UTF-8">
 
   <meta name="viewport"
@@ -15,7 +14,6 @@
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-
   <style>
 
     * {
@@ -24,9 +22,7 @@
       padding: 0;
     }
 
-
     body {
-
       font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -35,465 +31,259 @@
         Arial,
         sans-serif;
 
-      background:
-        var(--tg-theme-bg-color, #ffffff);
+      background: var(
+        --tg-theme-bg-color,
+        #f5f7fa
+      );
 
-      color:
-        var(--tg-theme-text-color, #000000);
+      color: var(
+        --tg-theme-text-color,
+        #000000
+      );
 
       padding: 16px;
-
       padding-bottom: 90px;
-
     }
-
-
-    /* HEADER */
 
     .header {
-
       text-align: center;
-
       margin-bottom: 20px;
-
     }
-
 
     .header h1 {
-
       color: #0057B8;
-
       font-size: 25px;
-
       font-weight: 800;
-
     }
-
 
     .header p {
-
       color: #777;
-
       font-size: 13px;
-
       margin-top: 5px;
-
     }
-
-
-    /* PRODUCT GRID */
 
     .product-grid {
-
       display: grid;
-
-      grid-template-columns:
-        repeat(2, 1fr);
-
-      gap: 18px 12px;
-
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px 12px;
     }
 
-
-    /* PRODUCT CARD */
-
     .product-card {
-
-      background: #ffffff;
-
+      background: white;
       border-radius: 14px;
-
       padding: 10px;
-
       box-shadow:
         0 2px 8px
         rgba(0, 0, 0, 0.10);
 
       text-align: center;
-
     }
-
 
     .product-image {
-
       width: 100%;
-
       height: 110px;
-
       object-fit: contain;
-
       margin-bottom: 8px;
-
     }
-
 
     .product-code {
-
       color: #777;
-
-      font-size: 11px;
-
-      margin-bottom: 3px;
-
+      font-size: 10px;
+      margin-bottom: 4px;
     }
-
 
     .product-name {
-
       font-size: 14px;
-
       font-weight: 700;
-
       min-height: 38px;
-
     }
-
 
     .product-price {
-
       color: #0057B8;
-
       font-size: 17px;
-
       font-weight: 800;
-
-      margin: 7px 0 10px;
-
+      margin: 8px 0 10px;
     }
-
-
-    /* ADD BUTTON */
 
     .add-button {
-
       width: 100%;
-
       padding: 9px;
-
       border: none;
-
       border-radius: 9px;
-
       background: #0057B8;
-
       color: white;
-
-      font-size: 14px;
-
+      font-size: 13px;
       font-weight: bold;
-
-      cursor: pointer;
-
     }
-
-
-    .add-button:active {
-
-      transform: scale(0.96);
-
-    }
-
-
-    /* CART COUNTER */
 
     .quantity-control {
-
       display: none;
-
       align-items: center;
-
       justify-content: space-between;
-
       gap: 8px;
-
     }
-
 
     .quantity-button {
-
       width: 34px;
-
       height: 34px;
-
       border: none;
-
       border-radius: 8px;
-
       background: #0057B8;
-
       color: white;
-
       font-size: 20px;
-
       font-weight: bold;
-
     }
-
 
     .quantity-number {
-
       font-size: 16px;
-
       font-weight: bold;
-
     }
 
-
-    /* CART BAR */
-
     .cart-bar {
-
       display: none;
-
       position: fixed;
-
       bottom: 0;
-
       left: 0;
-
       right: 0;
-
       padding: 12px 16px;
-
-      background: #ffffff;
-
+      background: white;
       box-shadow:
         0 -2px 10px
         rgba(0, 0, 0, 0.15);
 
       z-index: 100;
-
     }
-
 
     .cart-button {
-
       width: 100%;
-
       padding: 13px;
-
       border: none;
-
       border-radius: 10px;
-
       background: #31b545;
-
       color: white;
-
       font-size: 16px;
-
       font-weight: bold;
-
     }
-
-
-    /* CART MODAL */
 
     .cart-modal {
-
       display: none;
-
       position: fixed;
-
       inset: 0;
-
-      background:
-        rgba(0, 0, 0, 0.55);
-
+      background: rgba(0, 0, 0, 0.55);
       z-index: 200;
-
       align-items: flex-end;
-
     }
-
 
     .cart-content {
-
       width: 100%;
-
       max-height: 85vh;
-
       overflow-y: auto;
-
       background: white;
-
-      border-radius:
-        20px 20px 0 0;
-
+      border-radius: 20px 20px 0 0;
       padding: 20px;
-
     }
-
 
     .cart-title {
-
       font-size: 22px;
-
       font-weight: bold;
-
       margin-bottom: 15px;
-
     }
-
 
     .cart-item {
-
       display: flex;
-
       justify-content: space-between;
-
       gap: 10px;
-
       padding: 12px 0;
-
       border-bottom: 1px solid #eee;
-
     }
-
 
     .cart-item-name {
-
       font-weight: 600;
-
     }
-
 
     .cart-item-info {
-
       color: #666;
-
       font-size: 13px;
-
       margin-top: 4px;
-
     }
-
 
     .cart-item-total {
-
       font-weight: bold;
-
       color: #0057B8;
-
       white-space: nowrap;
-
     }
-
 
     .total-section {
-
       margin-top: 18px;
-
       padding-top: 15px;
-
       border-top: 2px solid #ddd;
-
     }
-
 
     .total-row {
-
       display: flex;
-
       justify-content: space-between;
-
       font-size: 17px;
-
       font-weight: bold;
-
     }
-
 
     .grand-total {
-
       color: #0057B8;
-
       font-size: 22px;
-
       margin-top: 8px;
-
     }
-
 
     .confirm-button {
-
       width: 100%;
-
       margin-top: 18px;
-
       padding: 14px;
-
       border: none;
-
       border-radius: 10px;
-
       background: #31b545;
-
       color: white;
-
       font-size: 16px;
-
       font-weight: bold;
-
     }
 
-
     .close-button {
-
       width: 100%;
-
       margin-top: 8px;
-
       padding: 12px;
-
       border: none;
-
       border-radius: 10px;
-
       background: #eeeeee;
-
       font-size: 15px;
-
     }
 
   </style>
 
 </head>
 
-
 <body>
-
-
-  <!-- HEADER -->
 
   <div class="header">
 
     <h1>AQUALIFE</h1>
 
-    <p>Water Purification Products</p>
+    <p>
+      Water Purification Products
+    </p>
 
   </div>
 
 
-  <!-- PRODUCT GRID -->
-
-  <div class="product-grid"
-
-       id="productGrid">
+  <div
+    class="product-grid"
+    id="productGrid">
 
   </div>
 
 
-  <!-- CART BAR -->
-
-  <div class="cart-bar"
-
-       id="cartBar">
+  <div
+    class="cart-bar"
+    id="cartBar">
 
     <button
-
       class="cart-button"
-
       onclick="openCart()">
 
       🛒 VIEW CART
@@ -503,15 +293,11 @@
   </div>
 
 
-  <!-- CART MODAL -->
-
-  <div class="cart-modal"
-
-       id="cartModal">
-
+  <div
+    class="cart-modal"
+    id="cartModal">
 
     <div class="cart-content">
-
 
       <div class="cart-title">
 
@@ -520,19 +306,22 @@
       </div>
 
 
-      <div id="cartItems">
+      <div
+        id="cartItems">
 
       </div>
 
 
       <div class="total-section">
 
-
         <div class="total-row">
 
-          <span>Total Items</span>
+          <span>
+            Total Items
+          </span>
 
-          <span id="totalItems">
+          <span
+            id="totalItems">
 
             0
 
@@ -541,26 +330,27 @@
         </div>
 
 
-        <div class="total-row grand-total">
+        <div
+          class="total-row grand-total">
 
-          <span>TOTAL</span>
+          <span>
+            TOTAL
+          </span>
 
-          <span id="grandTotal">
+          <span
+            id="grandTotal">
 
-            $0
+            $0.00
 
           </span>
 
         </div>
 
-
       </div>
 
 
       <button
-
         class="confirm-button"
-
         onclick="confirmOrder()">
 
         CONFIRM ORDER
@@ -569,15 +359,12 @@
 
 
       <button
-
         class="close-button"
-
         onclick="closeCart()">
 
         CONTINUE SHOPPING
 
       </button>
-
 
     </div>
 
@@ -587,205 +374,132 @@
   <script>
 
 
-    // TELEGRAM
-
     const tg =
-
       window.Telegram.WebApp;
 
 
     tg.expand();
 
 
-    // PRODUCT CATALOG
-
     const products = [
 
 
       {
-
         id: "SU-G",
-
         name: "SAENG SU (TT)",
-
         price: 449
-
       },
 
 
       {
-
         id: "SU(FS)-G",
-
         name: "SAENG SU (FS)",
-
         price: 499
-
       },
 
 
       {
-
         id: "MNL(FS)-W",
-
         name: "MNL(FS) - WHITE",
-
         price: 799
-
       },
 
 
       {
-
         id: "SC",
-
         name: "SUPER COOLING",
-
         price: 1188
-
       },
 
 
       {
-
         id: "JS-V3",
-
         name: "JICO",
-
         price: 219
-
       },
 
 
       {
-
         id: "RKT5000",
-
         name: "ROKKET 5000",
-
         price: 399
-
       },
 
 
       {
-
         id: "RKT8000",
-
         name: "ROKKET 8000",
-
         price: 449
-
       },
 
 
       {
-
         id: "RKT10000",
-
         name: "ROKKET 10000",
-
         price: 549
-
       },
 
 
       {
-
         id: "CANNON",
-
         name: "CANNON",
-
         price: 249
-
       },
 
 
       {
-
         id: "JS-VT",
-
         name: "TRICO",
-
         price: 219
-
       },
 
 
       {
-
         id: "MINI-S (HWC)",
-
         name: "MINI-S(HWC)",
-
         price: 1188
-
       },
 
 
       {
-
         id: "MINI-S (HW)",
-
         name: "MINI-S(HW)",
-
         price: 1188
-
       },
 
 
       {
-
         id: "JS-V2",
-
         name: "NOVA",
-
         price: 199
-
       }
 
     ];
 
 
-    // CART
-
     let cart = {};
 
-
-    // FORMAT PRICE
 
     function formatPrice(price) {
 
       return "$" +
-
         price.toLocaleString(
-
           "en-US",
-
           {
-
             minimumFractionDigits: 2,
-
             maximumFractionDigits: 2
-
           }
-
         );
 
     }
 
 
-    // DISPLAY PRODUCTS
-
     function displayProducts() {
 
 
       const grid =
-
         document.getElementById(
-
           "productGrid"
-
         );
 
 
@@ -795,21 +509,16 @@
 
 
           const card =
-
             document.createElement(
-
               "div"
-
             );
 
 
           card.className =
-
             "product-card";
 
 
           card.innerHTML = `
-
 
             <img
 
@@ -821,7 +530,6 @@
 
 
             <div
-
               class="product-code">
 
               ${product.id}
@@ -830,7 +538,6 @@
 
 
             <div
-
               class="product-name">
 
               ${product.name}
@@ -839,10 +546,11 @@
 
 
             <div
-
               class="product-price">
 
-              ${formatPrice(product.price)}
+              ${formatPrice(
+                product.price
+              )}
 
             </div>
 
@@ -853,7 +561,9 @@
 
               id="add-${product.id}"
 
-              onclick="addToCart('${product.id}')">
+              onclick="addToCart(
+                '${product.id}'
+              )">
 
               ADD TO CART
 
@@ -872,11 +582,8 @@
                 class="quantity-button"
 
                 onclick="changeQuantity(
-
                   '${product.id}',
-
                   -1
-
                 )">
 
                 −
@@ -900,11 +607,8 @@
                 class="quantity-button"
 
                 onclick="changeQuantity(
-
                   '${product.id}',
-
                   1
-
                 )">
 
                 +
@@ -919,7 +623,6 @@
 
           grid.appendChild(card);
 
-
         }
 
       );
@@ -927,27 +630,19 @@
     }
 
 
-    // ADD TO CART
-
     function addToCart(id) {
 
 
-      if (!cart[id]) {
-
-        cart[id] = 1;
-
-      }
+      cart[id] =
+        (cart[id] || 0) + 1;
 
 
       updateProductUI(id);
-
 
       updateCartBar();
 
     }
 
-
-    // CHANGE QUANTITY
 
     function changeQuantity(
 
@@ -959,13 +654,14 @@
 
 
       cart[id] =
-
-        (cart[id] || 0) +
-
-        amount;
+        (cart[id] || 0) + amount;
 
 
-      if (cart[id] <= 0) {
+      if (
+
+        cart[id] <= 0
+
+      ) {
 
         delete cart[id];
 
@@ -974,64 +670,52 @@
 
       updateProductUI(id);
 
-
       updateCartBar();
 
     }
 
 
-    // UPDATE PRODUCT UI
-
     function updateProductUI(id) {
 
 
       const addButton =
-
         document.getElementById(
-
           `add-${id}`
-
         );
 
 
       const quantityControl =
-
         document.getElementById(
-
           `qty-${id}`
-
         );
 
 
       const quantityNumber =
-
         document.getElementById(
-
           `number-${id}`
-
         );
 
 
       const quantity =
-
         cart[id] || 0;
 
 
-      if (quantity > 0) {
+      if (
+
+        quantity > 0
+
+      ) {
 
 
         addButton.style.display =
-
           "none";
 
 
         quantityControl.style.display =
-
           "flex";
 
 
         quantityNumber.textContent =
-
           quantity;
 
       }
@@ -1040,20 +724,16 @@
 
 
         addButton.style.display =
-
           "block";
 
 
         quantityControl.style.display =
-
           "none";
 
       }
 
     }
 
-
-    // GET TOTAL ITEMS
 
     function getTotalItems() {
 
@@ -1062,13 +742,9 @@
 
         .reduce(
 
-          (
+          (total, quantity) =>
 
-            total,
-
-            quantity
-
-          ) => total + quantity,
+            total + quantity,
 
           0
 
@@ -1076,8 +752,6 @@
 
     }
 
-
-    // GET GRAND TOTAL
 
     function getGrandTotal() {
 
@@ -1090,19 +764,12 @@
 
             total,
 
-            [
-
-              productId,
-
-              quantity
-
-            ]
+            [productId, quantity]
 
           ) => {
 
 
             const product =
-
               products.find(
 
                 item =>
@@ -1116,13 +783,9 @@
 
             return total +
 
-              (
+              product.price *
 
-                product.price *
-
-                quantity
-
-              );
+              quantity;
 
           },
 
@@ -1133,24 +796,22 @@
     }
 
 
-    // UPDATE CART BAR
-
     function updateCartBar() {
 
 
       const cartBar =
-
         document.getElementById(
-
           "cartBar"
-
         );
 
 
-      if (getTotalItems() > 0) {
+      if (
+
+        getTotalItems() > 0
+
+      ) {
 
         cartBar.style.display =
-
           "block";
 
       }
@@ -1158,7 +819,6 @@
       else {
 
         cartBar.style.display =
-
           "none";
 
       }
@@ -1166,26 +826,12 @@
     }
 
 
-    // OPEN CART
-
     function openCart() {
 
 
-      const cartModal =
-
-        document.getElementById(
-
-          "cartModal"
-
-        );
-
-
       const cartItems =
-
         document.getElementById(
-
           "cartItems"
-
         );
 
 
@@ -1196,17 +842,10 @@
 
         .forEach(
 
-          ([
-
-            productId,
-
-            quantity
-
-          ]) => {
+          ([productId, quantity]) => {
 
 
             const product =
-
               products.find(
 
                 item =>
@@ -1219,34 +858,26 @@
 
 
             const itemTotal =
-
               product.price *
 
               quantity;
 
 
             const itemElement =
-
               document.createElement(
-
                 "div"
-
               );
 
 
             itemElement.className =
-
               "cart-item";
 
 
             itemElement.innerHTML = `
 
-
               <div>
 
-
                 <div
-
                   class="cart-item-name">
 
                   ${product.name}
@@ -1255,7 +886,6 @@
 
 
                 <div
-
                   class="cart-item-info">
 
                   ${product.id}
@@ -1263,27 +893,21 @@
                   ·
 
                   ${formatPrice(
-
                     product.price
-
                   )}
 
                   × ${quantity}
 
                 </div>
 
-
               </div>
 
 
               <div
-
                 class="cart-item-total">
 
                 ${formatPrice(
-
                   itemTotal
-
                 )}
 
               </div>
@@ -1292,9 +916,7 @@
 
 
             cartItems.appendChild(
-
               itemElement
-
             );
 
           }
@@ -1303,51 +925,41 @@
 
 
       document.getElementById(
-
         "totalItems"
-
       ).textContent =
 
         getTotalItems();
 
 
       document.getElementById(
-
         "grandTotal"
-
       ).textContent =
 
         formatPrice(
-
           getGrandTotal()
-
         );
 
 
-      cartModal.style.display =
+      document.getElementById(
+        "cartModal"
+      ).style.display =
 
         "flex";
 
     }
 
 
-    // CLOSE CART
-
     function closeCart() {
 
 
       document.getElementById(
-
         "cartModal"
-
       ).style.display =
 
         "none";
 
     }
 
-
-    // CONFIRM ORDER
 
     function confirmOrder() {
 
@@ -1374,54 +986,54 @@
       const order = {
 
 
-        products: Object.entries(cart)
+        products:
 
-          .map(
+          Object.entries(cart)
 
-            ([
+            .map(
 
-              productId,
+              ([
 
-              quantity
+                productId,
 
-            ]) => {
+                quantity
 
-
-              const product =
-
-                products.find(
-
-                  item =>
-
-                    item.id ===
-
-                    productId
-
-                );
+              ]) => {
 
 
-              return {
+                const product =
+                  products.find(
+
+                    item =>
+
+                      item.id ===
+
+                      productId
+
+                  );
 
 
-                id: product.id,
+                return {
 
-                name: product.name,
+                  id: product.id,
 
-                price: product.price,
+                  name: product.name,
 
-                quantity: quantity,
+                  price: product.price,
 
-                total:
+                  quantity: quantity,
 
-                  product.price *
+                  total:
 
-                  quantity
+                    product.price *
 
-              };
+                    quantity
 
-            }
+                };
 
-          ),
+              }
+
+            ),
 
 
         total_items:
@@ -1438,11 +1050,7 @@
 
       tg.sendData(
 
-        JSON.stringify(
-
-          order
-
-        )
+        JSON.stringify(order)
 
       );
 
@@ -1451,8 +1059,6 @@
 
     }
 
-
-    // START
 
     displayProducts();
 

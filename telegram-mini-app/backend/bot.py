@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import json
+from datetime import datetime
 
 from aiogram import Bot, Dispatcher, F, types
 from aiogram.filters import CommandStart
@@ -15,12 +16,15 @@ from aiogram.types import (
 # CONFIGURATION
 # ==========================================
 
-# Paste your real BotFather token here
 BOT_TOKEN = "8274446621:AAH6ItCjsHzle6GebZsGGHSbmGqyfRE7S0I"
 
 
-# GitHub Pages Mini App URL
-MINI_APP_URL = "https://chanrathsn.github.io/Jisoo_Booking/telegram-mini-app/frontend/
+MINI_APP_URL = (
+    "https://chanrathsn.github.io/"
+    "Jisoo_Booking/"
+    "telegram-mini-app/"
+    "frontend/"
+)
 
 
 # ==========================================
@@ -29,34 +33,121 @@ MINI_APP_URL = "https://chanrathsn.github.io/Jisoo_Booking/telegram-mini-app/fro
 
 PRODUCT_CATALOG = {
 
-    "1": {
-        "name": "ROKKET Outdoor Filter",
-        "price": "$99"
+
+    "SU-G": {
+
+        "name": "SAENG SU (TT)",
+
+        "price": 449
+
     },
 
-    "2": {
-        "name": "NOVA Water Purifier",
-        "price": "Contact Us"
+
+    "SU(FS)-G": {
+
+        "name": "SAENG SU (FS)",
+
+        "price": 499
+
     },
 
-    "3": {
-        "name": "TRICO Water Purifier",
-        "price": "Contact Us"
+
+    "MNL(FS)-W": {
+
+        "name": "MNL(FS) - WHITE",
+
+        "price": 799
+
     },
 
-    "4": {
-        "name": "Filter Cartridge",
-        "price": "Contact Us"
+
+    "SC": {
+
+        "name": "SUPER COOLING",
+
+        "price": 1188
+
     },
 
-    "5": {
-        "name": "Aqualife Accessories",
-        "price": "Contact Us"
+
+    "JS-V3": {
+
+        "name": "JICO",
+
+        "price": 219
+
     },
 
-    "6": {
-        "name": "ROKKET Service Package",
-        "price": "Contact Us"
+
+    "RKT5000": {
+
+        "name": "ROKKET 5000",
+
+        "price": 399
+
+    },
+
+
+    "RKT8000": {
+
+        "name": "ROKKET 8000",
+
+        "price": 449
+
+    },
+
+
+    "RKT10000": {
+
+        "name": "ROKKET 10000",
+
+        "price": 549
+
+    },
+
+
+    "CANNON": {
+
+        "name": "CANNON",
+
+        "price": 249
+
+    },
+
+
+    "JS-VT": {
+
+        "name": "TRICO",
+
+        "price": 219
+
+    },
+
+
+    "MINI-S (HWC)": {
+
+        "name": "MINI-S(HWC)",
+
+        "price": 1188
+
+    },
+
+
+    "MINI-S (HW)": {
+
+        "name": "MINI-S(HW)",
+
+        "price": 1188
+
+    },
+
+
+    "JS-V2": {
+
+        "name": "NOVA",
+
+        "price": 199
+
     }
 
 }
@@ -66,17 +157,50 @@ PRODUCT_CATALOG = {
 # BOT SETUP
 # ==========================================
 
-bot = Bot(token=BOT_TOKEN)
+bot = Bot(
+
+    token=BOT_TOKEN
+
+)
+
 
 dp = Dispatcher()
 
 
 # ==========================================
-# /START COMMAND
+# FORMAT MONEY
 # ==========================================
 
-@dp.message(CommandStart())
-async def cmd_start(message: types.Message):
+def format_price(
+
+    amount
+
+):
+
+
+    return (
+
+        f"${amount:,.2f}"
+
+    )
+
+
+# ==========================================
+# START COMMAND
+# ==========================================
+
+@dp.message(
+
+    CommandStart()
+
+)
+
+async def cmd_start(
+
+    message: types.Message
+
+):
+
 
     keyboard = InlineKeyboardMarkup(
 
@@ -86,7 +210,11 @@ async def cmd_start(message: types.Message):
 
                 InlineKeyboardButton(
 
-                    text="Open Aqualife Store 🛒",
+                    text=(
+
+                        "Open AquaLife Store 🛒"
+
+                    ),
 
                     web_app=WebAppInfo(
 
@@ -103,13 +231,27 @@ async def cmd_start(message: types.Message):
     )
 
 
-    await message.reply(
+    await message.answer(
 
-        f"Hello {message.from_user.first_name}! 👋\n\n"
+        (
 
-        f"Welcome to the AquaLife Product Store 💧\n\n"
+            f"Hello "
 
-        f"Tap the button below to browse our products:",
+            f"{message.from_user.first_name}"
+
+            "! 👋\n\n"
+
+            "Welcome to the "
+
+            "AquaLife Product Store 💧\n\n"
+
+            "Choose your products and "
+
+            "add them to your cart.\n\n"
+
+            "Tap below to start shopping:"
+
+        ),
 
         reply_markup=keyboard
 
@@ -117,114 +259,228 @@ async def cmd_start(message: types.Message):
 
 
 # ==========================================
-# RECEIVE MINI APP ORDER
+# RECEIVE CUSTOMER ORDER
 # ==========================================
 
-@dp.message(F.web_app_data)
-async def handle_mini_app_data(message: types.Message):
+@dp.message(
+
+    F.web_app_data
+
+)
+
+async def handle_mini_app_data(
+
+    message: types.Message
+
+):
+
 
     try:
 
-        # Get data from Mini App
 
-        raw_data = message.web_app_data.data
+        # Read Mini App data
+
+        raw_data = (
+
+            message.web_app_data.data
+
+        )
 
 
-        # Convert JSON into Python dictionary
+        # Convert JSON
 
-        order_data = json.loads(raw_data)
+        order_data = json.loads(
+
+            raw_data
+
+        )
 
 
-        # Get product list
+        # Get products
 
-        products = order_data.get("products", [])
+        products = (
+
+            order_data.get(
+
+                "products",
+
+                []
+
+            )
+
+        )
 
 
         # Check empty order
 
         if not products:
 
-            await message.reply(
 
-                "⚠️ Your order is empty."
+            await message.answer(
+
+                "⚠️ Your cart is empty."
 
             )
+
 
             return
 
 
-        # Create order lines
+        # Order information
 
         order_lines = []
 
+
+        calculated_total = 0
+
+
+        calculated_items = 0
+
+
+        # Process each product
 
         for item in products:
 
 
             product_id = str(
 
-                item.get("id")
+                item.get(
+
+                    "id"
+
+                )
 
             )
 
 
             quantity = int(
 
-                item.get("quantity", 1)
+                item.get(
+
+                    "quantity",
+
+                    1
+
+                )
 
             )
 
 
-            # Get product information
+            # Get official catalog data
 
-            product_info = PRODUCT_CATALOG.get(
+            product = (
 
-                product_id,
+                PRODUCT_CATALOG.get(
 
-                {
+                    product_id
 
-                    "name": item.get(
-
-                        "name",
-
-                        f"Product #{product_id}"
-
-                    ),
-
-                    "price": item.get(
-
-                        "price",
-
-                        "N/A"
-
-                    )
-
-                }
+                )
 
             )
 
 
-            product_name = product_info["name"]
+            if not product:
 
-            product_price = product_info["price"]
+
+                continue
+
+
+            name = product["name"]
+
+
+            price = product["price"]
+
+
+            item_total = (
+
+                price *
+
+                quantity
+
+            )
+
+
+            calculated_total += (
+
+                item_total
+
+            )
+
+
+            calculated_items += (
+
+                quantity
+
+            )
 
 
             order_lines.append(
 
-                f"• {product_name}\n"
+                (
 
-                f"  Quantity: {quantity}\n"
+                    f"• <b>{name}</b>\n"
 
-                f"  Price: {product_price}"
+                    f"  Code: {product_id}\n"
+
+                    f"  Qty: {quantity}\n"
+
+                    f"  Unit Price: "
+
+                    f"{format_price(price)}\n"
+
+                    f"  Total: "
+
+                    f"{format_price(item_total)}"
+
+                )
 
             )
 
 
-        # Join all products
+        # Create order summary
 
-        order_summary = "\n\n".join(
+        order_summary = (
 
-            order_lines
+            "\n\n".join(
+
+                order_lines
+
+            )
+
+        )
+
+
+        # Current time
+
+        order_time = (
+
+            datetime.now()
+
+            .strftime(
+
+                "%Y-%m-%d %H:%M:%S"
+
+            )
+
+        )
+
+
+        # Customer details
+
+        customer_name = (
+
+            message.from_user.full_name
+
+        )
+
+
+        username = (
+
+            f"@{message.from_user.username}"
+
+            if message.from_user.username
+
+            else "No username"
 
         )
 
@@ -233,26 +489,48 @@ async def handle_mini_app_data(message: types.Message):
 
         response_message = (
 
-            "✅ <b>Order Received Successfully!</b>\n\n"
+            "🛒 <b>NEW CUSTOMER ORDER</b>\n"
 
-            f"<b>Customer:</b> "
+            "\n"
 
-            f"{message.from_user.full_name}\n\n"
+            f"👤 <b>Customer:</b> "
 
-            "<b>Order Details:</b>\n"
+            f"{customer_name}\n"
 
-            f"{order_summary}\n\n"
+            f"📱 <b>Username:</b> "
 
-            "Thank you for shopping with "
+            f"{username}\n"
 
-            "AquaLife Cambodia! 💧"
+            f"🕒 <b>Time:</b> "
+
+            f"{order_time}\n"
+
+            "\n"
+
+            "📦 <b>ORDER DETAILS</b>\n"
+
+            "\n"
+
+            f"{order_summary}\n"
+
+            "\n"
+
+            "━━━━━━━━━━━━━━\n"
+
+            f"🧮 <b>Total Items:</b> "
+
+            f"{calculated_items}\n"
+
+            f"💰 <b>GRAND TOTAL:</b> "
+
+            f"{format_price(calculated_total)}"
 
         )
 
 
-        # Send order confirmation
+        # Send order to Telegram
 
-        await message.reply(
+        await message.answer(
 
             response_message,
 
@@ -264,14 +542,14 @@ async def handle_mini_app_data(message: types.Message):
     except json.JSONDecodeError:
 
 
-        logging.error(
+        logging.exception(
 
-            "Invalid JSON received from Mini App"
+            "Invalid JSON received."
 
         )
 
 
-        await message.reply(
+        await message.answer(
 
             "❌ Invalid order data received."
 
@@ -283,25 +561,26 @@ async def handle_mini_app_data(message: types.Message):
 
         logging.exception(
 
-            f"Error processing order: {error}"
+            f"Order processing error: "
+
+            f"{error}"
 
         )
 
 
-        await message.reply(
+        await message.answer(
 
-            "❌ An error occurred while processing "
-
-            "your order."
+            "❌ Error processing your order."
 
         )
 
 
 # ==========================================
-# MAIN RUNNER
+# MAIN
 # ==========================================
 
 async def main():
+
 
     logging.basicConfig(
 
@@ -310,7 +589,7 @@ async def main():
     )
 
 
-    # Remove old pending updates
+    # Clear pending updates
 
     await bot.delete_webhook(
 
@@ -325,16 +604,17 @@ async def main():
 
     )
 
+
     print(
 
-        " AquaLife Telegram Bot Online 💧"
+        " AquaLife Telegram Store Online 💧"
 
     )
+
 
     print(
 
         "==================================="
-
 
     )
 
@@ -352,4 +632,9 @@ async def main():
 
 if __name__ == "__main__":
 
-    asyncio.run(main())
+
+    asyncio.run(
+
+        main()
+
+    )

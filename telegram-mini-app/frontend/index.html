@@ -36,6 +36,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 .btn-clear{width:100%;padding:10px;background:#e74c3c;color:#fff;border:0;border-radius:8px;font-weight:700;cursor:pointer}
 .btn-cancel{flex:1;padding:12px;background:#e5e5e5;color:#333;border:0;border-radius:8px;font-weight:700;cursor:pointer}
 .btn-submit{flex:1;padding:12px;background:#0077c8;color:#fff;border:0;border-radius:8px;font-weight:700;cursor:pointer}
+
+/* Form Styles */
+.form-group{margin-bottom:12px;text-align:left}
+.form-group label{display:block;font-size:12px;font-weight:700;margin-bottom:4px;color:#0077c8}
+.form-group input, .form-group select{width:100%;padding:10px;border:1px solid #ccc;border-radius:8px;font-size:14px;outline:none;background:#fff}
 </style>
 </head>
 <body>
@@ -46,7 +51,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 
 <div class="grid" id="productGrid"></div>
 
-<!-- Order Review Modal -->
+<!-- Order Review Modal (Step 1) -->
 <div class="modal-overlay" id="reviewModal">
   <div class="modal">
     <h2>📋 Order Summary</h2>
@@ -58,9 +63,63 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
     <div class="modal-actions">
       <div class="modal-actions-row">
         <button class="btn-cancel" onclick="closeModal()">Edit Order</button>
-        <button class="btn-submit" onclick="submitOrder()">Submit Order</button>
+        <button class="btn-submit" onclick="goToCheckout()">Next: Delivery Info ➔</button>
       </div>
       <button class="btn-clear" onclick="clearCart()">🗑️ Clear Cart</button>
+    </div>
+  </div>
+</div>
+
+<!-- Customer Information Modal (Step 2) -->
+<div class="modal-overlay" id="checkoutModal">
+  <div class="modal">
+    <h2>📍 Delivery Details</h2>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Full Name *</label>
+        <input type="text" id="custName" placeholder="e.g. John Doe" />
+      </div>
+      <div class="form-group">
+        <label>Telephone Number *</label>
+        <input type="tel" id="custPhone" placeholder="e.g. 012 345 678" />
+      </div>
+      <div class="form-group">
+        <label>Province / City *</label>
+        <select id="custProvince">
+          <option value="">-- Select Province --</option>
+          <option value="Phnom Penh">Phnom Penh</option>
+          <option value="Banteay Meanchey">Banteay Meanchey</option>
+          <option value="Battambang">Battambang</option>
+          <option value="Kampong Cham">Kampong Cham</option>
+          <option value="Kampong Chhnang">Kampong Chhnang</option>
+          <option value="Kampong Speu">Kampong Speu</option>
+          <option value="Kampong Thom">Kampong Thom</option>
+          <option value="Kampot">Kampot</option>
+          <option value="Kandal">Kandal</option>
+          <option value="Kep">Kep</option>
+          <option value="Kratie">Kratie</option>
+          <option value="Mondulkiri">Mondulkiri</option>
+          <option value="Oddar Meanchey">Oddar Meanchey</option>
+          <option value="Pailin">Pailin</option>
+          <option value="Phnom Penh">Phnom Penh</option>
+          <option value="Preah Sihanouk">Preah Sihanouk</option>
+          <option value="Preah Vihear">Preah Vihear</option>
+          <option value="Prey Veng">Prey Veng</option>
+          <option value="Pursat">Pursat</option>
+          <option value="Ratanakiri">Ratanakiri</option>
+          <option value="Siem Reap">Siem Reap</option>
+          <option value="Stung Treng">Stung Treng</option>
+          <option value="Svay Rieng">Svay Rieng</option>
+          <option value="Takeo">Takeo</option>
+          <option value="Tboung Khmum">Tboung Khmum</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <div class="modal-actions-row">
+        <button class="btn-cancel" onclick="backToSummary()">⬅ Back</button>
+        <button class="btn-submit" onclick="submitFinalOrder()">Confirm & Submit</button>
+      </div>
     </div>
   </div>
 </div>
@@ -69,6 +128,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 const tg = window.Telegram.WebApp;
 tg.ready();
 tg.expand();
+
+// Pre-fill name if user has Telegram First & Last name set
+if(tg.initDataUnsafe && tg.initDataUnsafe.user){
+    const u = tg.initDataUnsafe.user;
+    const fullName = [u.first_name, u.last_name].filter(Boolean).join(" ");
+    if(fullName){
+        document.getElementById("custName").value = fullName;
+    }
+}
 
 const products = [
 {id:"1",name:"SAENG SU (TT)",price:449},
@@ -183,7 +251,18 @@ function openModal(){
 
 function closeModal(){
     document.getElementById("reviewModal").style.display = "none";
+    document.getElementById("checkoutModal").style.display = "none";
     updateMainButton();
+}
+
+function goToCheckout(){
+    document.getElementById("reviewModal").style.display = "none";
+    document.getElementById("checkoutModal").style.display = "flex";
+}
+
+function backToSummary(){
+    document.getElementById("checkoutModal").style.display = "none";
+    document.getElementById("reviewModal").style.display = "flex";
 }
 
 function clearCart(){
@@ -192,18 +271,35 @@ function clearCart(){
     closeModal();
 }
 
-function getOrderData(){
-    return {
+function submitFinalOrder(){
+    const name = document.getElementById("custName").value.trim();
+    const phone = document.getElementById("custPhone").value.trim();
+    const province = document.getElementById("custProvince").value;
+
+    if(!name){
+        tg.showAlert("Please enter your full name.");
+        return;
+    }
+    if(!phone){
+        tg.showAlert("Please enter your telephone number.");
+        return;
+    }
+    if(!province){
+        tg.showAlert("Please select your province/city.");
+        return;
+    }
+
+    const payload = {
+        customer_name: name,
+        phone: phone,
+        province: province,
         products: Object.entries(cart).map(([id, quantity]) => ({
             id: String(id),
             quantity: Number(quantity)
         }))
     };
-}
 
-function submitOrder(){
-    const orderData = getOrderData();
-    tg.sendData(JSON.stringify(orderData));
+    tg.sendData(JSON.stringify(payload));
     tg.close();
 }
 

@@ -1,15 +1,24 @@
 import asyncio
 import logging
 import json
+import os
+
 from datetime import datetime
 
 from aiogram import Bot, Dispatcher, F, types
+
 from aiogram.filters import CommandStart
+
 from aiogram.types import (
     InlineKeyboardMarkup,
     InlineKeyboardButton,
-    WebAppInfo
+    WebAppInfo,
+    FSInputFile
 )
+
+from reportlab.lib.pagesizes import A4
+
+from reportlab.pdfgen import canvas
 
 
 # ==========================================
@@ -28,7 +37,7 @@ MINI_APP_URL = (
 
 
 # ==========================================
-# AQUALIFE PRODUCT CATALOG
+# PRODUCT CATALOG
 # ==========================================
 
 PRODUCT_CATALOG = {
@@ -168,7 +177,7 @@ dp = Dispatcher()
 
 
 # ==========================================
-# FORMAT MONEY
+# FORMAT PRICE
 # ==========================================
 
 def format_price(
@@ -183,6 +192,404 @@ def format_price(
         f"${amount:,.2f}"
 
     )
+
+
+# ==========================================
+# CREATE SAMPLE RECEIPT PDF
+# ==========================================
+
+def create_sample_receipt(
+
+    customer_name,
+
+    products,
+
+    total,
+
+    order_number
+
+):
+
+
+    filename = (
+
+        f"sample_receipt_"
+
+        f"{order_number}.pdf"
+
+    )
+
+
+    pdf = canvas.Canvas(
+
+        filename,
+
+        pagesize=A4
+
+    )
+
+
+    width, height = A4
+
+
+    y = height - 50
+
+
+    # HEADER
+
+    pdf.setFont(
+
+        "Helvetica-Bold",
+
+        20
+
+    )
+
+
+    pdf.drawCentredString(
+
+        width / 2,
+
+        y,
+
+        "AQUALIFE CAMBODIA"
+
+    )
+
+
+    y -= 30
+
+
+    pdf.setFont(
+
+        "Helvetica-Bold",
+
+        16
+
+    )
+
+
+    pdf.drawCentredString(
+
+        width / 2,
+
+        y,
+
+        "SAMPLE RECEIPT"
+
+    )
+
+
+    y -= 40
+
+
+    # CUSTOMER INFO
+
+    pdf.setFont(
+
+        "Helvetica",
+
+        10
+
+    )
+
+
+    pdf.drawString(
+
+        50,
+
+        y,
+
+        f"Customer: {customer_name}"
+
+    )
+
+
+    y -= 18
+
+
+    pdf.drawString(
+
+        50,
+
+        y,
+
+        f"Order No: {order_number}"
+
+    )
+
+
+    y -= 18
+
+
+    pdf.drawString(
+
+        50,
+
+        y,
+
+        (
+
+            "Date: "
+
+            f"{datetime.now().strftime('%Y-%m-%d %H:%M')}"
+
+        )
+
+    )
+
+
+    y -= 35
+
+
+    # TABLE HEADER
+
+    pdf.setFont(
+
+        "Helvetica-Bold",
+
+        10
+
+    )
+
+
+    pdf.drawString(
+
+        50,
+
+        y,
+
+        "Product"
+
+    )
+
+
+    pdf.drawString(
+
+        300,
+
+        y,
+
+        "Qty"
+
+    )
+
+
+    pdf.drawString(
+
+        360,
+
+        y,
+
+        "Unit Price"
+
+    )
+
+
+    pdf.drawString(
+
+        470,
+
+        y,
+
+        "Total"
+
+    )
+
+
+    y -= 20
+
+
+    pdf.line(
+
+        50,
+
+        y,
+
+        545,
+
+        y
+
+    )
+
+
+    y -= 20
+
+
+    # PRODUCTS
+
+    pdf.setFont(
+
+        "Helvetica",
+
+        10
+
+    )
+
+
+    for item in products:
+
+
+        name = item["name"]
+
+
+        quantity = item["quantity"]
+
+
+        price = item["price"]
+
+
+        item_total = (
+
+            price *
+
+            quantity
+
+        )
+
+
+        pdf.drawString(
+
+            50,
+
+            y,
+
+            name[:35]
+
+        )
+
+
+        pdf.drawString(
+
+            300,
+
+            y,
+
+            str(quantity)
+
+        )
+
+
+        pdf.drawString(
+
+            360,
+
+            y,
+
+            f"${price:,.2f}"
+
+        )
+
+
+        pdf.drawString(
+
+            470,
+
+            y,
+
+            f"${item_total:,.2f}"
+
+        )
+
+
+        y -= 20
+
+
+    y -= 15
+
+
+    pdf.line(
+
+        50,
+
+        y,
+
+        545,
+
+        y
+
+    )
+
+
+    y -= 30
+
+
+    # TOTAL
+
+    pdf.setFont(
+
+        "Helvetica-Bold",
+
+        14
+
+    )
+
+
+    pdf.drawString(
+
+        350,
+
+        y,
+
+        "TOTAL:"
+
+    )
+
+
+    pdf.drawString(
+
+        470,
+
+        y,
+
+        f"${total:,.2f}"
+
+    )
+
+
+    y -= 50
+
+
+    # NOTE
+
+    pdf.setFont(
+
+        "Helvetica-Oblique",
+
+        10
+
+    )
+
+
+    pdf.drawCentredString(
+
+        width / 2,
+
+        y,
+
+        "This is a sample receipt."
+
+    )
+
+
+    y -= 16
+
+
+    pdf.drawCentredString(
+
+        width / 2,
+
+        y,
+
+        "Official invoice will be issued later."
+
+    )
+
+
+    pdf.save()
+
+
+    return filename
 
 
 # ==========================================
@@ -245,9 +652,11 @@ async def cmd_start(
 
             "AquaLife Product Store 💧\n\n"
 
-            "Choose your products and "
+            "Choose products, add them "
 
-            "add them to your cart.\n\n"
+            "to your cart, and confirm "
+
+            "your order.\n\n"
 
             "Tap below to start shopping:"
 
@@ -259,7 +668,7 @@ async def cmd_start(
 
 
 # ==========================================
-# RECEIVE CUSTOMER ORDER
+# RECEIVE ORDER
 # ==========================================
 
 @dp.message(
@@ -275,10 +684,13 @@ async def handle_mini_app_data(
 ):
 
 
+    pdf_file = None
+
+
     try:
 
 
-        # Read Mini App data
+        # READ DATA
 
         raw_data = (
 
@@ -287,16 +699,12 @@ async def handle_mini_app_data(
         )
 
 
-        # Convert JSON
-
         order_data = json.loads(
 
             raw_data
 
         )
 
-
-        # Get products
 
         products = (
 
@@ -311,8 +719,6 @@ async def handle_mini_app_data(
         )
 
 
-        # Check empty order
-
         if not products:
 
 
@@ -326,10 +732,40 @@ async def handle_mini_app_data(
             return
 
 
-        # Order information
+        # CUSTOMER
 
-        order_lines = []
+        customer_name = (
 
+            message.from_user.full_name
+
+        )
+
+
+        username = (
+
+            f"@{message.from_user.username}"
+
+            if message.from_user.username
+
+            else "No username"
+
+        )
+
+
+        # ORDER NUMBER
+
+        order_number = (
+
+            datetime.now().strftime(
+
+                "AL-%Y%m%d-%H%M%S"
+
+            )
+
+        )
+
+
+        # CALCULATE TOTAL
 
         calculated_total = 0
 
@@ -337,7 +773,11 @@ async def handle_mini_app_data(
         calculated_items = 0
 
 
-        # Process each product
+        order_lines = []
+
+
+        verified_products = []
+
 
         for item in products:
 
@@ -365,8 +805,6 @@ async def handle_mini_app_data(
 
             )
 
-
-            # Get official catalog data
 
             product = (
 
@@ -414,6 +852,25 @@ async def handle_mini_app_data(
             )
 
 
+            verified_products.append(
+
+                {
+
+                    "id": product_id,
+
+                    "name": name,
+
+                    "price": price,
+
+                    "quantity": quantity,
+
+                    "total": item_total
+
+                }
+
+            )
+
+
             order_lines.append(
 
                 (
@@ -437,7 +894,20 @@ async def handle_mini_app_data(
             )
 
 
-        # Create order summary
+        if not verified_products:
+
+
+            await message.answer(
+
+                "❌ No valid products found."
+
+            )
+
+
+            return
+
+
+        # SUMMARY
 
         order_summary = (
 
@@ -450,13 +920,9 @@ async def handle_mini_app_data(
         )
 
 
-        # Current time
-
         order_time = (
 
-            datetime.now()
-
-            .strftime(
+            datetime.now().strftime(
 
                 "%Y-%m-%d %H:%M:%S"
 
@@ -465,33 +931,17 @@ async def handle_mini_app_data(
         )
 
 
-        # Customer details
-
-        customer_name = (
-
-            message.from_user.full_name
-
-        )
-
-
-        username = (
-
-            f"@{message.from_user.username}"
-
-            if message.from_user.username
-
-            else "No username"
-
-        )
-
-
-        # Final message
+        # SEND ORDER TEXT
 
         response_message = (
 
             "🛒 <b>NEW CUSTOMER ORDER</b>\n"
 
             "\n"
+
+            f"🧾 <b>Order No:</b> "
+
+            f"{order_number}\n"
 
             f"👤 <b>Customer:</b> "
 
@@ -507,9 +957,7 @@ async def handle_mini_app_data(
 
             "\n"
 
-            "📦 <b>ORDER DETAILS</b>\n"
-
-            "\n"
+            "📦 <b>ORDER DETAILS</b>\n\n"
 
             f"{order_summary}\n"
 
@@ -528,11 +976,62 @@ async def handle_mini_app_data(
         )
 
 
-        # Send order to Telegram
-
         await message.answer(
 
             response_message,
+
+            parse_mode="HTML"
+
+        )
+
+
+        # CREATE PDF
+
+        pdf_file = create_sample_receipt(
+
+            customer_name,
+
+            verified_products,
+
+            calculated_total,
+
+            order_number
+
+        )
+
+
+        # SEND PDF
+
+        document = FSInputFile(
+
+            pdf_file
+
+        )
+
+
+        await message.answer_document(
+
+            document,
+
+            caption=(
+
+                "🧾 <b>Sample Receipt Generated</b>\n\n"
+
+                f"Order No: "
+
+                f"{order_number}\n"
+
+                "\n"
+
+                "This is a sample receipt "
+
+                "for order reference.\n"
+
+                "The official invoice can be "
+
+                "customized and issued later."
+
+            ),
 
             parse_mode="HTML"
 
@@ -575,6 +1074,27 @@ async def handle_mini_app_data(
         )
 
 
+    finally:
+
+
+        # DELETE TEMPORARY PDF
+
+        if (
+
+            pdf_file and
+
+            os.path.exists(pdf_file)
+
+        ):
+
+
+            os.remove(
+
+                pdf_file
+
+            )
+
+
 # ==========================================
 # MAIN
 # ==========================================
@@ -588,8 +1108,6 @@ async def main():
 
     )
 
-
-    # Clear pending updates
 
     await bot.delete_webhook(
 

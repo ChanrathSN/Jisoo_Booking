@@ -139,7 +139,11 @@ tg.MainButton.onClick(() => {
 
     tg.MainButton.showProgress();
 
+    // Send data back to Telegram bot
     tg.sendData(JSON.stringify(orderData));
+
+    // Close the Mini App window
+    tg.close();
 });
 
 renderProducts();

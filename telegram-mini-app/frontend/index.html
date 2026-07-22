@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8">
 
   <meta name="viewport"
@@ -9,10 +11,10 @@
         maximum-scale=1.0,
         user-scalable=no">
 
-  <title>AquaLife Products</title>
+  <title>AquaLife Store</title>
 
-  <!-- Telegram Web App SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
 
   <style>
 
@@ -22,62 +24,74 @@
       padding: 0;
     }
 
+
     body {
-      font-family: -apple-system,
+
+      font-family:
+        -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
         Roboto,
-        Helvetica,
         Arial,
         sans-serif;
 
-      background-color: var(--tg-theme-bg-color, #ffffff);
+      background:
+        var(--tg-theme-bg-color, #ffffff);
 
-      color: var(--tg-theme-text-color, #000000);
+      color:
+        var(--tg-theme-text-color, #000000);
 
       padding: 16px;
 
-      padding-bottom: 80px;
+      padding-bottom: 90px;
 
-      user-select: none;
     }
 
 
-    /* AQUALIFE HEADER */
+    /* HEADER */
 
     .header {
+
       text-align: center;
 
       margin-bottom: 20px;
+
     }
+
 
     .header h1 {
+
       color: #0057B8;
 
-      font-size: 24px;
+      font-size: 25px;
 
       font-weight: 800;
+
     }
 
+
     .header p {
+
       color: #777;
 
       font-size: 13px;
 
-      margin-top: 4px;
+      margin-top: 5px;
+
     }
 
 
     /* PRODUCT GRID */
 
-    .grid-container {
+    .product-grid {
 
       display: grid;
 
       grid-template-columns:
         repeat(2, 1fr);
 
-      gap: 20px 16px;
+      gap: 18px 12px;
+
     }
 
 
@@ -85,137 +99,104 @@
 
     .product-card {
 
-      display: flex;
+      background: #ffffff;
 
-      flex-direction: column;
+      border-radius: 14px;
 
-      align-items: center;
+      padding: 10px;
+
+      box-shadow:
+        0 2px 8px
+        rgba(0, 0, 0, 0.10);
 
       text-align: center;
+
     }
 
 
-    /* IMAGE */
+    .product-image {
 
-    .image-wrapper {
+      width: 100%;
 
-      position: relative;
-
-      width: 120px;
-
-      height: 120px;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      margin-bottom: 8px;
-    }
-
-    .image-wrapper img {
-
-      max-width: 100%;
-
-      max-height: 100%;
+      height: 110px;
 
       object-fit: contain;
+
+      margin-bottom: 8px;
+
     }
 
 
-    /* NEW BADGE */
+    .product-code {
 
-    .badge-new {
+      color: #777;
 
-      position: absolute;
+      font-size: 11px;
 
-      bottom: 4px;
+      margin-bottom: 3px;
 
-      right: 0px;
-
-      background-color: #0057B8;
-
-      color: white;
-
-      font-size: 10px;
-
-      font-weight: bold;
-
-      padding: 3px 6px;
-
-      border-radius: 6px;
-
-      text-transform: uppercase;
     }
 
 
-    /* PRODUCT NAME */
-
-    .product-title {
+    .product-name {
 
       font-size: 14px;
 
-      font-weight: 600;
+      font-weight: 700;
 
-      margin-bottom: 10px;
+      min-height: 38px;
 
-      min-height: 40px;
     }
 
-    .price-text {
+
+    .product-price {
 
       color: #0057B8;
 
-      font-weight: 700;
+      font-size: 17px;
+
+      font-weight: 800;
+
+      margin: 7px 0 10px;
+
     }
 
 
     /* ADD BUTTON */
 
-    .btn-add {
+    .add-button {
 
       width: 100%;
 
-      max-width: 130px;
-
-      padding: 8px 0;
-
-      background-color: #0057B8;
-
-      color: white;
+      padding: 9px;
 
       border: none;
 
-      border-radius: 10px;
+      border-radius: 9px;
 
-      font-size: 15px;
+      background: #0057B8;
+
+      color: white;
+
+      font-size: 14px;
 
       font-weight: bold;
 
       cursor: pointer;
+
     }
 
 
-    /* SPECIAL BUY BUTTON */
-
-    .btn-buy {
-
-      background-color: #31b545;
-    }
-
-
-    .btn-add:active {
+    .add-button:active {
 
       transform: scale(0.96);
 
-      opacity: 0.9;
     }
 
 
-    /* QUANTITY COUNTER */
+    /* CART COUNTER */
 
-    .counter-wrapper {
+    .quantity-control {
 
       display: none;
 
@@ -223,39 +204,256 @@
 
       justify-content: space-between;
 
-      width: 100%;
+      gap: 8px;
 
-      max-width: 130px;
     }
 
 
-    .btn-count {
+    .quantity-button {
 
-      width: 36px;
+      width: 34px;
 
-      height: 36px;
-
-      background-color: #0057B8;
-
-      color: white;
+      height: 34px;
 
       border: none;
 
       border-radius: 8px;
 
-      font-size: 18px;
+      background: #0057B8;
+
+      color: white;
+
+      font-size: 20px;
 
       font-weight: bold;
 
-      cursor: pointer;
     }
 
 
-    .count-number {
+    .quantity-number {
 
       font-size: 16px;
 
       font-weight: bold;
+
+    }
+
+
+    /* CART BAR */
+
+    .cart-bar {
+
+      display: none;
+
+      position: fixed;
+
+      bottom: 0;
+
+      left: 0;
+
+      right: 0;
+
+      padding: 12px 16px;
+
+      background: #ffffff;
+
+      box-shadow:
+        0 -2px 10px
+        rgba(0, 0, 0, 0.15);
+
+      z-index: 100;
+
+    }
+
+
+    .cart-button {
+
+      width: 100%;
+
+      padding: 13px;
+
+      border: none;
+
+      border-radius: 10px;
+
+      background: #31b545;
+
+      color: white;
+
+      font-size: 16px;
+
+      font-weight: bold;
+
+    }
+
+
+    /* CART MODAL */
+
+    .cart-modal {
+
+      display: none;
+
+      position: fixed;
+
+      inset: 0;
+
+      background:
+        rgba(0, 0, 0, 0.55);
+
+      z-index: 200;
+
+      align-items: flex-end;
+
+    }
+
+
+    .cart-content {
+
+      width: 100%;
+
+      max-height: 85vh;
+
+      overflow-y: auto;
+
+      background: white;
+
+      border-radius:
+        20px 20px 0 0;
+
+      padding: 20px;
+
+    }
+
+
+    .cart-title {
+
+      font-size: 22px;
+
+      font-weight: bold;
+
+      margin-bottom: 15px;
+
+    }
+
+
+    .cart-item {
+
+      display: flex;
+
+      justify-content: space-between;
+
+      gap: 10px;
+
+      padding: 12px 0;
+
+      border-bottom: 1px solid #eee;
+
+    }
+
+
+    .cart-item-name {
+
+      font-weight: 600;
+
+    }
+
+
+    .cart-item-info {
+
+      color: #666;
+
+      font-size: 13px;
+
+      margin-top: 4px;
+
+    }
+
+
+    .cart-item-total {
+
+      font-weight: bold;
+
+      color: #0057B8;
+
+      white-space: nowrap;
+
+    }
+
+
+    .total-section {
+
+      margin-top: 18px;
+
+      padding-top: 15px;
+
+      border-top: 2px solid #ddd;
+
+    }
+
+
+    .total-row {
+
+      display: flex;
+
+      justify-content: space-between;
+
+      font-size: 17px;
+
+      font-weight: bold;
+
+    }
+
+
+    .grand-total {
+
+      color: #0057B8;
+
+      font-size: 22px;
+
+      margin-top: 8px;
+
+    }
+
+
+    .confirm-button {
+
+      width: 100%;
+
+      margin-top: 18px;
+
+      padding: 14px;
+
+      border: none;
+
+      border-radius: 10px;
+
+      background: #31b545;
+
+      color: white;
+
+      font-size: 16px;
+
+      font-weight: bold;
+
+    }
+
+
+    .close-button {
+
+      width: 100%;
+
+      margin-top: 8px;
+
+      padding: 12px;
+
+      border: none;
+
+      border-radius: 10px;
+
+      background: #eeeeee;
+
+      font-size: 15px;
+
     }
 
   </style>
@@ -266,7 +464,7 @@
 <body>
 
 
-  <!-- AQUALIFE HEADER -->
+  <!-- HEADER -->
 
   <div class="header">
 
@@ -277,434 +475,111 @@
   </div>
 
 
-  <div class="grid-container">
+  <!-- PRODUCT GRID -->
+
+  <div class="product-grid"
+
+       id="productGrid">
+
+  </div>
 
 
-    <!-- PRODUCT 1 -->
+  <!-- CART BAR -->
 
-    <div class="product-card" id="card-1">
+  <div class="cart-bar"
 
-      <div class="image-wrapper">
+       id="cartBar">
 
-        <!-- Replace this with your actual product image -->
+    <button
 
-        <img
-          src="https://via.placeholder.com/150"
-          alt="ROKKET Outdoor Filter">
+      class="cart-button"
 
-        <span class="badge-new">
-          NEW
-        </span>
+      onclick="openCart()">
 
-      </div>
+      🛒 VIEW CART
 
+    </button>
 
-      <div class="product-title">
-
-        ROKKET Outdoor Filter
-
-        <br>
-
-        <span class="price-text">
-          $99
-        </span>
-
-      </div>
+  </div>
 
 
-      <button
-        class="btn-add btn-buy"
-        onclick="addToCart(1)">
+  <!-- CART MODAL -->
 
-        BUY
+  <div class="cart-modal"
 
-      </button>
+       id="cartModal">
 
 
-      <div
-        class="counter-wrapper"
-        id="counter-1">
-
-        <button
-          class="btn-count"
-          onclick="changeQty(1, -1)">
-
-          -
-
-        </button>
+    <div class="cart-content">
 
 
-        <span
-          class="count-number"
-          id="qty-1">
+      <div class="cart-title">
 
-          1
-
-        </span>
-
-
-        <button
-          class="btn-count"
-          onclick="changeQty(1, 1)">
-
-          +
-
-        </button>
-
-      </div>
-
-    </div>
-
-
-    <!-- PRODUCT 2 -->
-
-    <div class="product-card" id="card-2">
-
-      <div class="image-wrapper">
-
-        <img
-          src="https://via.placeholder.com/150"
-          alt="NOVA Water Purifier">
+        🛒 Your Order
 
       </div>
 
 
-      <div class="product-title">
+      <div id="cartItems">
 
-        NOVA Water Purifier
+      </div>
 
-        <br>
 
-        <span class="price-text">
-          Contact Us
-        </span>
+      <div class="total-section">
+
+
+        <div class="total-row">
+
+          <span>Total Items</span>
+
+          <span id="totalItems">
+
+            0
+
+          </span>
+
+        </div>
+
+
+        <div class="total-row grand-total">
+
+          <span>TOTAL</span>
+
+          <span id="grandTotal">
+
+            $0
+
+          </span>
+
+        </div>
+
 
       </div>
 
 
       <button
-        class="btn-add"
-        onclick="addToCart(2)">
 
-        ADD
+        class="confirm-button"
+
+        onclick="confirmOrder()">
+
+        CONFIRM ORDER
 
       </button>
-
-
-      <div
-        class="counter-wrapper"
-        id="counter-2">
-
-        <button
-          class="btn-count"
-          onclick="changeQty(2, -1)">
-
-          -
-
-        </button>
-
-
-        <span
-          class="count-number"
-          id="qty-2">
-
-          1
-
-        </span>
-
-
-        <button
-          class="btn-count"
-          onclick="changeQty(2, 1)">
-
-          +
-
-        </button>
-
-      </div>
-
-    </div>
-
-
-    <!-- PRODUCT 3 -->
-
-    <div class="product-card" id="card-3">
-
-      <div class="image-wrapper">
-
-        <img
-          src="https://via.placeholder.com/150"
-          alt="TRICO Water Purifier">
-
-      </div>
-
-
-      <div class="product-title">
-
-        TRICO Water Purifier
-
-        <br>
-
-        <span class="price-text">
-          Contact Us
-        </span>
-
-      </div>
 
 
       <button
-        class="btn-add"
-        onclick="addToCart(3)">
 
-        ADD
+        class="close-button"
 
-      </button>
+        onclick="closeCart()">
 
-
-      <div
-        class="counter-wrapper"
-        id="counter-3">
-
-        <button
-          class="btn-count"
-          onclick="changeQty(3, -1)">
-
-          -
-
-        </button>
-
-
-        <span
-          class="count-number"
-          id="qty-3">
-
-          1
-
-        </span>
-
-
-        <button
-          class="btn-count"
-          onclick="changeQty(3, 1)">
-
-          +
-
-        </button>
-
-      </div>
-
-    </div>
-
-
-    <!-- PRODUCT 4 -->
-
-    <div class="product-card" id="card-4">
-
-      <div class="image-wrapper">
-
-        <img
-          src="https://via.placeholder.com/150"
-          alt="Filter Cartridge">
-
-      </div>
-
-
-      <div class="product-title">
-
-        Filter Cartridge
-
-        <br>
-
-        <span class="price-text">
-          Contact Us
-        </span>
-
-      </div>
-
-
-      <button
-        class="btn-add"
-        onclick="addToCart(4)">
-
-        ADD
+        CONTINUE SHOPPING
 
       </button>
 
 
-      <div
-        class="counter-wrapper"
-        id="counter-4">
-
-        <button
-          class="btn-count"
-          onclick="changeQty(4, -1)">
-
-          -
-
-        </button>
-
-
-        <span
-          class="count-number"
-          id="qty-4">
-
-          1
-
-        </span>
-
-
-        <button
-          class="btn-count"
-          onclick="changeQty(4, 1)">
-
-          +
-
-        </button>
-
-      </div>
-
     </div>
-
-
-    <!-- PRODUCT 5 -->
-
-    <div class="product-card" id="card-5">
-
-      <div class="image-wrapper">
-
-        <img
-          src="https://via.placeholder.com/150"
-          alt="Water Purifier Accessories">
-
-      </div>
-
-
-      <div class="product-title">
-
-        Accessories
-
-        <br>
-
-        <span class="price-text">
-          Contact Us
-        </span>
-
-      </div>
-
-
-      <button
-        class="btn-add"
-        onclick="addToCart(5)">
-
-        ADD
-
-      </button>
-
-
-      <div
-        class="counter-wrapper"
-        id="counter-5">
-
-        <button
-          class="btn-count"
-          onclick="changeQty(5, -1)">
-
-          -
-
-        </button>
-
-
-        <span
-          class="count-number"
-          id="qty-5">
-
-          1
-
-        </span>
-
-
-        <button
-          class="btn-count"
-          onclick="changeQty(5, 1)">
-
-          +
-
-        </button>
-
-      </div>
-
-    </div>
-
-
-    <!-- PRODUCT 6 -->
-
-    <div class="product-card" id="card-6">
-
-      <div class="image-wrapper">
-
-        <img
-          src="https://via.placeholder.com/150"
-          alt="ROKKET Service Package">
-
-      </div>
-
-
-      <div class="product-title">
-
-        ROKKET Service Package
-
-        <br>
-
-        <span class="price-text">
-          Contact Us
-        </span>
-
-      </div>
-
-
-      <button
-        class="btn-add"
-        onclick="addToCart(6)">
-
-        ADD
-
-      </button>
-
-
-      <div
-        class="counter-wrapper"
-        id="counter-6">
-
-        <button
-          class="btn-count"
-          onclick="changeQty(6, -1)">
-
-          -
-
-        </button>
-
-
-        <span
-          class="count-number"
-          id="qty-6">
-
-          1
-
-        </span>
-
-
-        <button
-          class="btn-count"
-          onclick="changeQty(6, 1)">
-
-          +
-
-        </button>
-
-      </div>
-
-    </div>
-
 
   </div>
 
@@ -712,19 +587,164 @@
   <script>
 
 
-    const tg = window.Telegram.WebApp;
+    // TELEGRAM
+
+    const tg =
+
+      window.Telegram.WebApp;
 
 
     tg.expand();
 
 
-    // TELEGRAM MAIN BUTTON
+    // PRODUCT CATALOG
 
-    tg.MainButton.setText("VIEW ORDER");
+    const products = [
 
-    tg.MainButton.setTextColor("#FFFFFF");
 
-    tg.MainButton.setBackgroundColor("#0057B8");
+      {
+
+        id: "SU-G",
+
+        name: "SAENG SU (TT)",
+
+        price: 449
+
+      },
+
+
+      {
+
+        id: "SU(FS)-G",
+
+        name: "SAENG SU (FS)",
+
+        price: 499
+
+      },
+
+
+      {
+
+        id: "MNL(FS)-W",
+
+        name: "MNL(FS) - WHITE",
+
+        price: 799
+
+      },
+
+
+      {
+
+        id: "SC",
+
+        name: "SUPER COOLING",
+
+        price: 1188
+
+      },
+
+
+      {
+
+        id: "JS-V3",
+
+        name: "JICO",
+
+        price: 219
+
+      },
+
+
+      {
+
+        id: "RKT5000",
+
+        name: "ROKKET 5000",
+
+        price: 399
+
+      },
+
+
+      {
+
+        id: "RKT8000",
+
+        name: "ROKKET 8000",
+
+        price: 449
+
+      },
+
+
+      {
+
+        id: "RKT10000",
+
+        name: "ROKKET 10000",
+
+        price: 549
+
+      },
+
+
+      {
+
+        id: "CANNON",
+
+        name: "CANNON",
+
+        price: 249
+
+      },
+
+
+      {
+
+        id: "JS-VT",
+
+        name: "TRICO",
+
+        price: 219
+
+      },
+
+
+      {
+
+        id: "MINI-S (HWC)",
+
+        name: "MINI-S(HWC)",
+
+        price: 1188
+
+      },
+
+
+      {
+
+        id: "MINI-S (HW)",
+
+        name: "MINI-S(HW)",
+
+        price: 1188
+
+      },
+
+
+      {
+
+        id: "JS-V2",
+
+        name: "NOVA",
+
+        price: 199
+
+      }
+
+    ];
 
 
     // CART
@@ -732,61 +752,217 @@
     let cart = {};
 
 
-    // PRODUCT LIST
+    // FORMAT PRICE
 
-    const products = {
+    function formatPrice(price) {
 
-      1: {
-        name: "ROKKET Outdoor Filter",
-        price: "$99"
-      },
+      return "$" +
 
-      2: {
-        name: "NOVA Water Purifier",
-        price: "Contact Us"
-      },
+        price.toLocaleString(
 
-      3: {
-        name: "TRICO Water Purifier",
-        price: "Contact Us"
-      },
+          "en-US",
 
-      4: {
-        name: "Filter Cartridge",
-        price: "Contact Us"
-      },
+          {
 
-      5: {
-        name: "Accessories",
-        price: "Contact Us"
-      },
+            minimumFractionDigits: 2,
 
-      6: {
-        name: "ROKKET Service Package",
-        price: "Contact Us"
-      }
+            maximumFractionDigits: 2
 
-    };
+          }
+
+        );
+
+    }
+
+
+    // DISPLAY PRODUCTS
+
+    function displayProducts() {
+
+
+      const grid =
+
+        document.getElementById(
+
+          "productGrid"
+
+        );
+
+
+      products.forEach(
+
+        product => {
+
+
+          const card =
+
+            document.createElement(
+
+              "div"
+
+            );
+
+
+          card.className =
+
+            "product-card";
+
+
+          card.innerHTML = `
+
+
+            <img
+
+              class="product-image"
+
+              src="https://via.placeholder.com/150"
+
+              alt="${product.name}">
+
+
+            <div
+
+              class="product-code">
+
+              ${product.id}
+
+            </div>
+
+
+            <div
+
+              class="product-name">
+
+              ${product.name}
+
+            </div>
+
+
+            <div
+
+              class="product-price">
+
+              ${formatPrice(product.price)}
+
+            </div>
+
+
+            <button
+
+              class="add-button"
+
+              id="add-${product.id}"
+
+              onclick="addToCart('${product.id}')">
+
+              ADD TO CART
+
+            </button>
+
+
+            <div
+
+              class="quantity-control"
+
+              id="qty-${product.id}">
+
+
+              <button
+
+                class="quantity-button"
+
+                onclick="changeQuantity(
+
+                  '${product.id}',
+
+                  -1
+
+                )">
+
+                −
+
+              </button>
+
+
+              <span
+
+                class="quantity-number"
+
+                id="number-${product.id}">
+
+                0
+
+              </span>
+
+
+              <button
+
+                class="quantity-button"
+
+                onclick="changeQuantity(
+
+                  '${product.id}',
+
+                  1
+
+                )">
+
+                +
+
+              </button>
+
+
+            </div>
+
+          `;
+
+
+          grid.appendChild(card);
+
+
+        }
+
+      );
+
+    }
 
 
     // ADD TO CART
 
     function addToCart(id) {
 
-      cart[id] = 1;
 
-      updateUI(id);
+      if (!cart[id]) {
 
-      updateMainButton();
+        cart[id] = 1;
+
+      }
+
+
+      updateProductUI(id);
+
+
+      updateCartBar();
 
     }
 
 
     // CHANGE QUANTITY
 
-    function changeQty(id, delta) {
+    function changeQuantity(
 
-      cart[id] = (cart[id] || 0) + delta;
+      id,
+
+      amount
+
+    ) {
+
+
+      cart[id] =
+
+        (cart[id] || 0) +
+
+        amount;
 
 
       if (cart[id] <= 0) {
@@ -796,114 +972,492 @@
       }
 
 
-      updateUI(id);
+      updateProductUI(id);
 
-      updateMainButton();
+
+      updateCartBar();
 
     }
 
 
     // UPDATE PRODUCT UI
 
-    function updateUI(id) {
-
-      const card =
-        document.getElementById(`card-${id}`);
+    function updateProductUI(id) {
 
 
-      const btnAdd =
-        card.querySelector('.btn-add');
+      const addButton =
+
+        document.getElementById(
+
+          `add-${id}`
+
+        );
 
 
-      const counter =
-        document.getElementById(`counter-${id}`);
+      const quantityControl =
+
+        document.getElementById(
+
+          `qty-${id}`
+
+        );
 
 
-      const qtyText =
-        document.getElementById(`qty-${id}`);
+      const quantityNumber =
+
+        document.getElementById(
+
+          `number-${id}`
+
+        );
 
 
-      if (cart[id] > 0) {
+      const quantity =
 
-        btnAdd.style.display = 'none';
+        cart[id] || 0;
 
-        counter.style.display = 'flex';
 
-        qtyText.innerText = cart[id];
+      if (quantity > 0) {
+
+
+        addButton.style.display =
+
+          "none";
+
+
+        quantityControl.style.display =
+
+          "flex";
+
+
+        quantityNumber.textContent =
+
+          quantity;
 
       }
 
       else {
 
-        btnAdd.style.display = 'block';
 
-        counter.style.display = 'none';
+        addButton.style.display =
+
+          "block";
+
+
+        quantityControl.style.display =
+
+          "none";
 
       }
 
     }
 
 
-    // UPDATE MAIN BUTTON
+    // GET TOTAL ITEMS
 
-    function updateMainButton() {
-
-      const totalItems =
-        Object.values(cart)
-        .reduce((a, b) => a + b, 0);
+    function getTotalItems() {
 
 
-      if (totalItems > 0) {
+      return Object.values(cart)
 
-        tg.MainButton.show();
+        .reduce(
+
+          (
+
+            total,
+
+            quantity
+
+          ) => total + quantity,
+
+          0
+
+        );
+
+    }
+
+
+    // GET GRAND TOTAL
+
+    function getGrandTotal() {
+
+
+      return Object.entries(cart)
+
+        .reduce(
+
+          (
+
+            total,
+
+            [
+
+              productId,
+
+              quantity
+
+            ]
+
+          ) => {
+
+
+            const product =
+
+              products.find(
+
+                item =>
+
+                  item.id ===
+
+                  productId
+
+              );
+
+
+            return total +
+
+              (
+
+                product.price *
+
+                quantity
+
+              );
+
+          },
+
+          0
+
+        );
+
+    }
+
+
+    // UPDATE CART BAR
+
+    function updateCartBar() {
+
+
+      const cartBar =
+
+        document.getElementById(
+
+          "cartBar"
+
+        );
+
+
+      if (getTotalItems() > 0) {
+
+        cartBar.style.display =
+
+          "block";
 
       }
 
       else {
 
-        tg.MainButton.hide();
+        cartBar.style.display =
+
+          "none";
 
       }
 
     }
 
 
-    // SEND ORDER TO TELEGRAM BOT
+    // OPEN CART
 
-    tg.MainButton.onClick(() => {
+    function openCart() {
+
+
+      const cartModal =
+
+        document.getElementById(
+
+          "cartModal"
+
+        );
+
+
+      const cartItems =
+
+        document.getElementById(
+
+          "cartItems"
+
+        );
+
+
+      cartItems.innerHTML = "";
+
+
+      Object.entries(cart)
+
+        .forEach(
+
+          ([
+
+            productId,
+
+            quantity
+
+          ]) => {
+
+
+            const product =
+
+              products.find(
+
+                item =>
+
+                  item.id ===
+
+                  productId
+
+              );
+
+
+            const itemTotal =
+
+              product.price *
+
+              quantity;
+
+
+            const itemElement =
+
+              document.createElement(
+
+                "div"
+
+              );
+
+
+            itemElement.className =
+
+              "cart-item";
+
+
+            itemElement.innerHTML = `
+
+
+              <div>
+
+
+                <div
+
+                  class="cart-item-name">
+
+                  ${product.name}
+
+                </div>
+
+
+                <div
+
+                  class="cart-item-info">
+
+                  ${product.id}
+
+                  ·
+
+                  ${formatPrice(
+
+                    product.price
+
+                  )}
+
+                  × ${quantity}
+
+                </div>
+
+
+              </div>
+
+
+              <div
+
+                class="cart-item-total">
+
+                ${formatPrice(
+
+                  itemTotal
+
+                )}
+
+              </div>
+
+            `;
+
+
+            cartItems.appendChild(
+
+              itemElement
+
+            );
+
+          }
+
+        );
+
+
+      document.getElementById(
+
+        "totalItems"
+
+      ).textContent =
+
+        getTotalItems();
+
+
+      document.getElementById(
+
+        "grandTotal"
+
+      ).textContent =
+
+        formatPrice(
+
+          getGrandTotal()
+
+        );
+
+
+      cartModal.style.display =
+
+        "flex";
+
+    }
+
+
+    // CLOSE CART
+
+    function closeCart() {
+
+
+      document.getElementById(
+
+        "cartModal"
+
+      ).style.display =
+
+        "none";
+
+    }
+
+
+    // CONFIRM ORDER
+
+    function confirmOrder() {
+
+
+      if (
+
+        getTotalItems() === 0
+
+      ) {
+
+
+        alert(
+
+          "Your cart is empty."
+
+        );
+
+
+        return;
+
+      }
 
 
       const order = {
 
 
-        products: Object.entries(cart).map(
-          ([id, quantity]) => ({
+        products: Object.entries(cart)
 
-            id: id,
+          .map(
 
-            name: products[id].name,
+            ([
 
-            price: products[id].price,
+              productId,
 
-            quantity: quantity
+              quantity
 
-          })
+            ]) => {
 
-        )
+
+              const product =
+
+                products.find(
+
+                  item =>
+
+                    item.id ===
+
+                    productId
+
+                );
+
+
+              return {
+
+
+                id: product.id,
+
+                name: product.name,
+
+                price: product.price,
+
+                quantity: quantity,
+
+                total:
+
+                  product.price *
+
+                  quantity
+
+              };
+
+            }
+
+          ),
+
+
+        total_items:
+
+          getTotalItems(),
+
+
+        grand_total:
+
+          getGrandTotal()
 
       };
 
 
-      tg.sendData(JSON.stringify(order));
+      tg.sendData(
+
+        JSON.stringify(
+
+          order
+
+        )
+
+      );
 
 
       tg.close();
 
-    });
+    }
+
+
+    // START
+
+    displayProducts();
 
 
   </script>
-
 
 </body>
 

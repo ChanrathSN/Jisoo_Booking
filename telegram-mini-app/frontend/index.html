@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta name="viewport"
@@ -12,32 +13,57 @@
 
     <title>AquaLife Store</title>
 
-    <!-- Telegram Mini App SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
 
     <style>
 
         * {
+
             box-sizing: border-box;
+
             margin: 0;
+
             padding: 0;
+
         }
+
 
         body {
 
             font-family:
+
                 -apple-system,
+
                 BlinkMacSystemFont,
+
                 "Segoe UI",
+
                 Roboto,
+
                 Arial,
+
                 sans-serif;
 
             background:
-                var(--tg-theme-bg-color, #ffffff);
+
+                var(
+
+                    --tg-theme-bg-color,
+
+                    #ffffff
+
+                );
 
             color:
-                var(--tg-theme-text-color, #000000);
+
+                var(
+
+                    --tg-theme-text-color,
+
+                    #000000
+
+                );
 
             padding: 16px;
 
@@ -46,10 +72,6 @@
         }
 
 
-        /* =========================
-           HEADER
-        ========================= */
-
         .header {
 
             text-align: center;
@@ -57,6 +79,7 @@
             margin-bottom: 20px;
 
         }
+
 
         .header h1 {
 
@@ -68,73 +91,66 @@
 
         }
 
+
         .header p {
 
-            font-size: 14px;
+            font-size: 13px;
 
             opacity: 0.7;
 
         }
 
 
-        /* =========================
-           PRODUCT GRID
-        ========================= */
-
-        .product-grid {
+        .grid-container {
 
             display: grid;
 
             grid-template-columns:
+
                 repeat(2, 1fr);
 
-            gap: 16px;
+            gap: 20px 14px;
 
         }
 
-
-        /* =========================
-           PRODUCT CARD
-        ========================= */
 
         .product-card {
 
-            background: var(
-                --tg-theme-secondary-bg-color,
-                #f5f5f5
-            );
-
-            border-radius: 16px;
-
-            padding: 12px;
-
-            text-align: center;
-
-            box-shadow:
-                0 2px 8px
-                rgba(0,0,0,0.08);
-
-        }
-
-
-        .product-image {
-
-            width: 100%;
-
-            height: 110px;
-
             display: flex;
 
-            justify-content: center;
+            flex-direction: column;
 
             align-items: center;
 
-            margin-bottom: 10px;
+            text-align: center;
+
+            border-radius: 12px;
+
+            padding: 10px;
 
         }
 
 
-        .product-image img {
+        .image-wrapper {
+
+            position: relative;
+
+            width: 120px;
+
+            height: 120px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .image-wrapper img {
 
             max-width: 100%;
 
@@ -145,73 +161,58 @@
         }
 
 
-        /* Product image fallback */
+        .product-title {
 
-        .product-placeholder {
+            font-size: 14px;
 
-            font-size: 55px;
+            font-weight: 600;
+
+            min-height: 40px;
+
+            margin-bottom: 5px;
 
         }
 
 
         .product-code {
 
-            font-size: 12px;
+            font-size: 11px;
 
-            color: #777;
+            opacity: 0.6;
 
-            margin-bottom: 4px;
-
-        }
-
-
-        .product-name {
-
-            font-size: 15px;
-
-            font-weight: bold;
-
-            min-height: 40px;
-
-            display: flex;
-
-            justify-content: center;
-
-            align-items: center;
+            margin-bottom: 5px;
 
         }
 
 
-        .product-price {
+        .price-text {
 
-            font-size: 18px;
+            font-size: 16px;
 
-            font-weight: bold;
+            font-weight: 700;
 
             color: #0077c8;
 
-            margin: 8px 0;
+            margin-bottom: 10px;
 
         }
 
 
-        /* =========================
-           ADD BUTTON
-        ========================= */
-
-        .add-button {
+        .btn-add {
 
             width: 100%;
 
-            border: none;
+            max-width: 130px;
 
-            border-radius: 10px;
-
-            padding: 10px;
+            padding: 9px 0;
 
             background: #0077c8;
 
             color: white;
+
+            border: none;
+
+            border-radius: 8px;
 
             font-size: 14px;
 
@@ -222,18 +223,14 @@
         }
 
 
-        .add-button:active {
+        .btn-add:active {
 
-            transform: scale(0.96);
+            transform: scale(0.95);
 
         }
 
 
-        /* =========================
-           QUANTITY CONTROLS
-        ========================= */
-
-        .quantity-control {
+        .counter-wrapper {
 
             display: none;
 
@@ -241,16 +238,18 @@
 
             justify-content: space-between;
 
-            gap: 8px;
+            width: 100%;
+
+            max-width: 130px;
 
         }
 
 
-        .quantity-button {
+        .btn-count {
 
-            width: 34px;
+            width: 36px;
 
-            height: 34px;
+            height: 36px;
 
             border: none;
 
@@ -264,275 +263,16 @@
 
             font-weight: bold;
 
-        }
-
-
-        .quantity-number {
-
-            font-size: 17px;
-
-            font-weight: bold;
-
-            flex: 1;
-
-            text-align: center;
-
-        }
-
-
-        /* =========================
-           CART SUMMARY
-        ========================= */
-
-        .cart-summary {
-
-            display: none;
-
-            position: fixed;
-
-            bottom: 0;
-
-            left: 0;
-
-            right: 0;
-
-            padding: 12px 16px;
-
-            background: var(
-                --tg-theme-bg-color,
-                #ffffff
-            );
-
-            border-top:
-
-                1px solid
-
-                var(
-                    --tg-theme-hint-color,
-                    #dddddd
-                );
-
-            z-index: 100;
-
-        }
-
-
-        .cart-info {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            margin-bottom: 8px;
-
-            font-weight: bold;
-
-        }
-
-
-        .view-cart-button {
-
-            width: 100%;
-
-            padding: 13px;
-
-            border: none;
-
-            border-radius: 12px;
-
-            background: #31b545;
-
-            color: white;
-
-            font-size: 16px;
-
-            font-weight: bold;
-
-        }
-
-
-        /* =========================
-           CART MODAL
-        ========================= */
-
-        .modal {
-
-            display: none;
-
-            position: fixed;
-
-            z-index: 200;
-
-            left: 0;
-
-            top: 0;
-
-            width: 100%;
-
-            height: 100%;
-
-            background: rgba(0,0,0,0.5);
-
-        }
-
-
-        .modal-content {
-
-            position: absolute;
-
-            bottom: 0;
-
-            width: 100%;
-
-            max-height: 85%;
-
-            overflow-y: auto;
-
-            background:
-                var(--tg-theme-bg-color, #ffffff);
-
-            border-radius:
-
-                20px 20px 0 0;
-
-            padding: 20px;
-
-        }
-
-
-        .modal-header {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
-
-            margin-bottom: 15px;
-
-        }
-
-
-        .modal-header h2 {
-
-            font-size: 21px;
-
-        }
-
-
-        .close-button {
-
-            font-size: 28px;
-
-            border: none;
-
-            background: none;
-
             cursor: pointer;
 
         }
 
 
-        .cart-item {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
-
-            padding: 12px 0;
-
-            border-bottom: 1px solid #ddd;
-
-        }
-
-
-        .cart-item-name {
-
-            flex: 1;
-
-        }
-
-
-        .cart-item-name strong {
-
-            display: block;
-
-        }
-
-
-        .cart-item-name small {
-
-            opacity: 0.7;
-
-        }
-
-
-        .cart-item-total {
-
-            font-weight: bold;
-
-            margin-left: 10px;
-
-        }
-
-
-        .total-section {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            font-size: 20px;
-
-            font-weight: bold;
-
-            margin-top: 20px;
-
-            margin-bottom: 20px;
-
-        }
-
-
-        .confirm-button {
-
-            width: 100%;
-
-            padding: 15px;
-
-            border: none;
-
-            border-radius: 12px;
-
-            background: #31b545;
-
-            color: white;
+        .count-number {
 
             font-size: 17px;
 
             font-weight: bold;
-
-        }
-
-
-        .cancel-button {
-
-            width: 100%;
-
-            padding: 12px;
-
-            margin-top: 8px;
-
-            border: none;
-
-            border-radius: 12px;
-
-            background: #eeeeee;
-
-            color: #333;
-
-            font-size: 15px;
 
         }
 
@@ -544,135 +284,1395 @@
 <body>
 
 
-    <!-- =========================
-         HEADER
-    ========================= -->
-
     <div class="header">
 
-        <h1>💧 AquaLife Cambodia</h1>
+        <h1>💧 AquaLife Store</h1>
 
-        <p>Water Purifier Products</p>
-
-    </div>
-
-
-    <!-- =========================
-         PRODUCT GRID
-    ========================= -->
-
-    <div
-        class="product-grid"
-        id="productGrid">
+        <p>Select products and quantity</p>
 
     </div>
 
 
-    <!-- =========================
-         BOTTOM CART
-    ========================= -->
-
-    <div
-        class="cart-summary"
-        id="cartSummary">
-
-        <div class="cart-info">
-
-            <span id="cartItems">
-
-                0 Items
-
-            </span>
+    <div class="grid-container">
 
 
-            <span id="cartTotal">
+        <!-- 1 -->
 
-                $0
+        <div class="product-card"
 
-            </span>
-
-        </div>
+             id="card-1">
 
 
-        <button
-            class="view-cart-button"
-            onclick="openCart()">
+            <div class="image-wrapper">
 
-            🛒 VIEW CART
+                <img
 
-        </button>
+                    src="https://via.placeholder.com/120"
 
-    </div>
+                    alt="SAENG SU TT"
 
+                >
 
-    <!-- =========================
-         CART MODAL
-    ========================= -->
-
-    <div
-        class="modal"
-        id="cartModal">
-
-        <div class="modal-content">
+            </div>
 
 
-            <div class="modal-header">
+            <div class="product-code">
 
-                <h2>🛒 Your Order</h2>
+                SU-G
+
+            </div>
+
+
+            <div class="product-title">
+
+                SAENG SU (TT)
+
+            </div>
+
+
+            <div class="price-text">
+
+                $449
+
+            </div>
+
+
+            <button
+
+                class="btn-add"
+
+                onclick="addToCart(1)"
+
+            >
+
+                ADD
+
+            </button>
+
+
+            <div
+
+                class="counter-wrapper"
+
+                id="counter-1"
+
+            >
+
+                <button
+
+                    class="btn-count"
+
+                    onclick="changeQty(1, -1)"
+
+                >
+
+                    −
+
+                </button>
+
+
+                <span
+
+                    class="count-number"
+
+                    id="qty-1"
+
+                >
+
+                    1
+
+                </span>
 
 
                 <button
-                    class="close-button"
-                    onclick="closeCart()">
 
-                    ×
+                    class="btn-count"
+
+                    onclick="changeQty(1, 1)"
+
+                >
+
+                    +
 
                 </button>
 
             </div>
 
 
-            <div
-                id="cartItemsList">
+        </div>
+
+
+        <!-- 2 -->
+
+        <div class="product-card"
+
+             id="card-2">
+
+
+            <div class="image-wrapper">
+
+                <img
+
+                    src="https://via.placeholder.com/120"
+
+                    alt="SAENG SU FS"
+
+                >
 
             </div>
 
 
-            <div
-                class="total-section">
+            <div class="product-code">
 
-                <span>Total</span>
+                SU(FS)-G
+
+            </div>
+
+
+            <div class="product-title">
+
+                SAENG SU (FS)
+
+            </div>
+
+
+            <div class="price-text">
+
+                $499
+
+            </div>
+
+
+            <button
+
+                class="btn-add"
+
+                onclick="addToCart(2)"
+
+            >
+
+                ADD
+
+            </button>
+
+
+            <div
+
+                class="counter-wrapper"
+
+                id="counter-2"
+
+            >
+
+                <button
+
+                    class="btn-count"
+
+                    onclick="changeQty(2, -1)"
+
+                >
+
+                    −
+
+                </button>
 
 
                 <span
-                    id="modalTotal">
 
-                    $0
+                    class="count-number"
+
+                    id="qty-2"
+
+                >
+
+                    1
 
                 </span>
+
+
+                <button
+
+                    class="btn-count"
+
+                    onclick="changeQty(2, 1)"
+
+                >
+
+                    +
+
+                </button>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- 3 -->
+
+        <div class="product-card"
+
+             id="card-3">
+
+
+            <div class="image-wrapper">
+
+                <img
+
+                    src="https://via.placeholder.com/120"
+
+                    alt="MNL WHITE"
+
+                >
+
+            </div>
+
+
+            <div class="product-code">
+
+                MNL(FS)-W
+
+            </div>
+
+
+            <div class="product-title">
+
+                MNL(FS) - WHITE
+
+            </div>
+
+
+            <div class="price-text">
+
+                $799
 
             </div>
 
 
             <button
-                class="confirm-button"
-                onclick="confirmOrder()">
 
-                ✅ CONFIRM ORDER
+                class="btn-add"
 
-            </button>
+                onclick="addToCart(3)"
 
+            >
 
-            <button
-                class="cancel-button"
-                onclick="closeCart()">
-
-                Continue Shopping
+                ADD
 
             </button>
+
+
+            <div
+
+                class="counter-wrapper"
+
+                id="counter-3"
+
+            >
+
+                <button
+
+                    class="btn-count"
+
+                    onclick="changeQty(3, -1)"
+
+                >
+
+                    −
+
+                </button>
+
+
+                <span
+
+                    class="count-number"
+
+                    id="qty-3"
+
+                >
+
+                    1
+
+                </span>
+
+
+                <button
+
+                    class="btn-count"
+
+                    onclick="changeQty(3, 1)"
+
+                >
+
+                    +
+
+                </button>
+
+            </div>
 
 
         </div>
+
+
+        <!-- 4 -->
+
+        <div class="product-card"
+
+             id="card-4">
+
+
+            <div class="image-wrapper">
+
+                <img
+
+                    src="https://via.placeholder.com/120"
+
+                    alt="SUPER COOLING"
+
+                >
+
+            </div>
+
+
+            <div class="product-code">
+
+                SC
+
+            </div>
+
+
+            <div class="product-title">
+
+                SUPER COOLING
+
+            </div>
+
+
+            <div class="price-text">
+
+                $1,188
+
+            </div>
+
+
+            <button
+
+                class="btn-add"
+
+                onclick="addToCart(4)"
+
+            >
+
+                ADD
+
+            </button>
+
+
+            <div
+
+                class="counter-wrapper"
+
+                id="counter-4"
+
+            >
+
+                <button
+
+                    class="btn-count"
+
+                    onclick="changeQty(4, -1)"
+
+                >
+
+                    −
+
+                </button>
+
+
+                <span
+
+                    class="count-number"
+
+                    id="qty-4"
+
+                >
+
+                    1
+
+                </span>
+
+
+                <button
+
+                    class="btn-count"
+
+                    onclick="changeQty(4, 1)"
+
+                >
+
+                    +
+
+                </button>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- 5 -->
+
+        <div class="product-card"
+
+             id="card-5">
+
+
+            <div class="image-wrapper">
+
+                <img
+
+                    src="https://via.placeholder.com/120"
+
+                    alt="JICO"
+
+                >
+
+            </div>
+
+
+            <div class="product-code">
+
+                JS-V3
+
+            </div>
+
+
+            <div class="product-title">
+
+                JICO
+
+            </div>
+
+
+            <div class="price-text">
+
+                $219
+
+            </div>
+
+
+            <button
+
+                class="btn-add"
+
+                onclick="addToCart(5)"
+
+            >
+
+                ADD
+
+            </button>
+
+
+            <div
+
+                class="counter-wrapper"
+
+                id="counter-5"
+
+            >
+
+                <button
+
+                    class="btn-count"
+
+                    onclick="changeQty(5, -1)"
+
+                >
+
+                    −
+
+                </button>
+
+
+                <span
+
+                    class="count-number"
+
+                    id="qty-5"
+
+                >
+
+                    1
+
+                </span>
+
+
+                <button
+
+                    class="btn-count"
+
+                    onclick="changeQty(5, 1)"
+
+                >
+
+                    +
+
+                </button>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- 6 -->
+
+        <div class="product-card"
+
+             id="card-6">
+
+
+            <div class="image-wrapper">
+
+                <img
+
+                    src="https://via.placeholder.com/120"
+
+                    alt="ROKKET 5000"
+
+                >
+
+            </div>
+
+
+            <div class="product-code">
+
+                RKT5000
+
+            </div>
+
+
+            <div class="product-title">
+
+                ROKKET 5000
+
+            </div>
+
+
+            <div class="price-text">
+
+                $399
+
+            </div>
+
+
+            <button
+
+                class="btn-add"
+
+                onclick="addToCart(6)"
+
+            >
+
+                ADD
+
+            </button>
+
+
+            <div
+
+                class="counter-wrapper"
+
+                id="counter-6"
+
+            >
+
+                <button
+
+                    class="btn-count"
+
+                    onclick="changeQty(6, -1)"
+
+                >
+
+                    −
+
+                </button>
+
+
+                <span
+
+                    class="count-number"
+
+                    id="qty-6"
+
+                >
+
+                    1
+
+                </span>
+
+
+                <button
+
+                    class="btn-count"
+
+                    onclick="changeQty(6, 1)"
+
+                >
+
+                    +
+
+                </button>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- 7 -->
+
+        <div class="product-card"
+
+             id="card-7">
+
+
+            <div class="image-wrapper">
+
+                <img
+
+                    src="https://via.placeholder.com/120"
+
+                    alt="ROKKET 8000"
+
+                >
+
+            </div>
+
+
+            <div class="product-code">
+
+                RKT8000
+
+            </div>
+
+
+            <div class="product-title">
+
+                ROKKET 8000
+
+            </div>
+
+
+            <div class="price-text">
+
+                $449
+
+            </div>
+
+
+            <button
+
+                class="btn-add"
+
+                onclick="addToCart(7)"
+
+            >
+
+                ADD
+
+            </button>
+
+
+            <div
+
+                class="counter-wrapper"
+
+                id="counter-7"
+
+            >
+
+                <button
+
+                    class="btn-count"
+
+                    onclick="changeQty(7, -1)"
+
+                >
+
+                    −
+
+                </button>
+
+
+                <span
+
+                    class="count-number"
+
+                    id="qty-7"
+
+                >
+
+                    1
+
+                </span>
+
+
+                <button
+
+                    class="btn-count"
+
+                    onclick="changeQty(7, 1)"
+
+                >
+
+                    +
+
+                </button>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- 8 -->
+
+        <div class="product-card"
+
+             id="card-8">
+
+
+            <div class="image-wrapper">
+
+                <img
+
+                    src="https://via.placeholder.com/120"
+
+                    alt="ROKKET 10000"
+
+                >
+
+            </div>
+
+
+            <div class="product-code">
+
+                RKT10000
+
+            </div>
+
+
+            <div class="product-title">
+
+                ROKKET 10000
+
+            </div>
+
+
+            <div class="price-text">
+
+                $549
+
+            </div>
+
+
+            <button
+
+                class="btn-add"
+
+                onclick="addToCart(8)"
+
+            >
+
+                ADD
+
+            </button>
+
+
+            <div
+
+                class="counter-wrapper"
+
+                id="counter-8"
+
+            >
+
+                <button
+
+                    class="btn-count"
+
+                    onclick="changeQty(8, -1)"
+
+                >
+
+                    −
+
+                </button>
+
+
+                <span
+
+                    class="count-number"
+
+                    id="qty-8"
+
+                >
+
+                    1
+
+                </span>
+
+
+                <button
+
+                    class="btn-count"
+
+                    onclick="changeQty(8, 1)"
+
+                >
+
+                    +
+
+                </button>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- 9 -->
+
+        <div class="product-card"
+
+             id="card-9">
+
+
+            <div class="image-wrapper">
+
+                <img
+
+                    src="https://via.placeholder.com/120"
+
+                    alt="CANNON"
+
+                >
+
+            </div>
+
+
+            <div class="product-code">
+
+                CANNON
+
+            </div>
+
+
+            <div class="product-title">
+
+                CANNON
+
+            </div>
+
+
+            <div class="price-text">
+
+                $249
+
+            </div>
+
+
+            <button
+
+                class="btn-add"
+
+                onclick="addToCart(9)"
+
+            >
+
+                ADD
+
+            </button>
+
+
+            <div
+
+                class="counter-wrapper"
+
+                id="counter-9"
+
+            >
+
+                <button
+
+                    class="btn-count"
+
+                    onclick="changeQty(9, -1)"
+
+                >
+
+                    −
+
+                </button>
+
+
+                <span
+
+                    class="count-number"
+
+                    id="qty-9"
+
+                >
+
+                    1
+
+                </span>
+
+
+                <button
+
+                    class="btn-count"
+
+                    onclick="changeQty(9, 1)"
+
+                >
+
+                    +
+
+                </button>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- 10 -->
+
+        <div class="product-card"
+
+             id="card-10">
+
+
+            <div class="image-wrapper">
+
+                <img
+
+                    src="https://via.placeholder.com/120"
+
+                    alt="TRICO"
+
+                >
+
+            </div>
+
+
+            <div class="product-code">
+
+                JS-VT
+
+            </div>
+
+
+            <div class="product-title">
+
+                TRICO
+
+            </div>
+
+
+            <div class="price-text">
+
+                $219
+
+            </div>
+
+
+            <button
+
+                class="btn-add"
+
+                onclick="addToCart(10)"
+
+            >
+
+                ADD
+
+            </button>
+
+
+            <div
+
+                class="counter-wrapper"
+
+                id="counter-10"
+
+            >
+
+                <button
+
+                    class="btn-count"
+
+                    onclick="changeQty(10, -1)"
+
+                >
+
+                    −
+
+                </button>
+
+
+                <span
+
+                    class="count-number"
+
+                    id="qty-10"
+
+                >
+
+                    1
+
+                </span>
+
+
+                <button
+
+                    class="btn-count"
+
+                    onclick="changeQty(10, 1)"
+
+                >
+
+                    +
+
+                </button>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- 11 -->
+
+        <div class="product-card"
+
+             id="card-11">
+
+
+            <div class="image-wrapper">
+
+                <img
+
+                    src="https://via.placeholder.com/120"
+
+                    alt="MINI-S HWC"
+
+                >
+
+            </div>
+
+
+            <div class="product-code">
+
+                MINI-S (HWC)
+
+            </div>
+
+
+            <div class="product-title">
+
+                MINI-S (HWC)
+
+            </div>
+
+
+            <div class="price-text">
+
+                $1,188
+
+            </div>
+
+
+            <button
+
+                class="btn-add"
+
+                onclick="addToCart(11)"
+
+            >
+
+                ADD
+
+            </button>
+
+
+            <div
+
+                class="counter-wrapper"
+
+                id="counter-11"
+
+            >
+
+                <button
+
+                    class="btn-count"
+
+                    onclick="changeQty(11, -1)"
+
+                >
+
+                    −
+
+                </button>
+
+
+                <span
+
+                    class="count-number"
+
+                    id="qty-11"
+
+                >
+
+                    1
+
+                </span>
+
+
+                <button
+
+                    class="btn-count"
+
+                    onclick="changeQty(11, 1)"
+
+                >
+
+                    +
+
+                </button>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- 12 -->
+
+        <div class="product-card"
+
+             id="card-12">
+
+
+            <div class="image-wrapper">
+
+                <img
+
+                    src="https://via.placeholder.com/120"
+
+                    alt="MINI-S HW"
+
+                >
+
+            </div>
+
+
+            <div class="product-code">
+
+                MINI-S (HW)
+
+            </div>
+
+
+            <div class="product-title">
+
+                MINI-S (HW)
+
+            </div>
+
+
+            <div class="price-text">
+
+                $1,188
+
+            </div>
+
+
+            <button
+
+                class="btn-add"
+
+                onclick="addToCart(12)"
+
+            >
+
+                ADD
+
+            </button>
+
+
+            <div
+
+                class="counter-wrapper"
+
+                id="counter-12"
+
+            >
+
+                <button
+
+                    class="btn-count"
+
+                    onclick="changeQty(12, -1)"
+
+                >
+
+                    −
+
+                </button>
+
+
+                <span
+
+                    class="count-number"
+
+                    id="qty-12"
+
+                >
+
+                    1
+
+                </span>
+
+
+                <button
+
+                    class="btn-count"
+
+                    onclick="changeQty(12, 1)"
+
+                >
+
+                    +
+
+                </button>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- 13 -->
+
+        <div class="product-card"
+
+             id="card-13">
+
+
+            <div class="image-wrapper">
+
+                <img
+
+                    src="https://via.placeholder.com/120"
+
+                    alt="NOVA"
+
+                >
+
+            </div>
+
+
+            <div class="product-code">
+
+                JS-V2
+
+            </div>
+
+
+            <div class="product-title">
+
+                NOVA
+
+            </div>
+
+
+            <div class="price-text">
+
+                $199
+
+            </div>
+
+
+            <button
+
+                class="btn-add"
+
+                onclick="addToCart(13)"
+
+            >
+
+                ADD
+
+            </button>
+
+
+            <div
+
+                class="counter-wrapper"
+
+                id="counter-13"
+
+            >
+
+                <button
+
+                    class="btn-count"
+
+                    onclick="changeQty(13, -1)"
+
+                >
+
+                    −
+
+                </button>
+
+
+                <span
+
+                    class="count-number"
+
+                    id="qty-13"
+
+                >
+
+                    1
+
+                </span>
+
+
+                <button
+
+                    class="btn-count"
+
+                    onclick="changeQty(13, 1)"
+
+                >
+
+                    +
+
+                </button>
+
+            </div>
+
+
+        </div>
+
 
     </div>
 
@@ -680,12 +1680,14 @@
     <script>
 
 
-        // ==========================================
-        // TELEGRAM INITIALIZATION
-        // ==========================================
+        // =========================================
 
-        const tg =
-            window.Telegram.WebApp;
+        // TELEGRAM SETUP
+
+        // =========================================
+
+
+        const tg = window.Telegram.WebApp;
 
 
         tg.ready();
@@ -694,339 +1696,166 @@
         tg.expand();
 
 
-        // ==========================================
-        // PRODUCT CATALOG
-        // ==========================================
+        tg.MainButton.setText(
 
-        const products = [
+            "VIEW ORDER"
 
-            {
-                id: "1",
-                code: "SU-G",
-                name: "SAENG SU (TT)",
-                price: 449
-            },
-
-            {
-                id: "2",
-                code: "SU(FS)-G",
-                name: "SAENG SU (FS)",
-                price: 499
-            },
-
-            {
-                id: "3",
-                code: "MNL(FS)-W",
-                name: "MNL(FS) - WHITE",
-                price: 799
-            },
-
-            {
-                id: "4",
-                code: "SC",
-                name: "SUPER COOLING",
-                price: 1188
-            },
-
-            {
-                id: "5",
-                code: "JS-V3",
-                name: "JICO",
-                price: 219
-            },
-
-            {
-                id: "6",
-                code: "RKT5000",
-                name: "ROKKET 5000",
-                price: 399
-            },
-
-            {
-                id: "7",
-                code: "RKT8000",
-                name: "ROKKET 8000",
-                price: 449
-            },
-
-            {
-                id: "8",
-                code: "RKT10000",
-                name: "ROKKET 10000",
-                price: 549
-            },
-
-            {
-                id: "9",
-                code: "CANNON",
-                name: "CANNON",
-                price: 249
-            },
-
-            {
-                id: "10",
-                code: "JS-VT",
-                name: "TRICO",
-                price: 219
-            },
-
-            {
-                id: "11",
-                code: "MINI-S (HWC)",
-                name: "MINI-S (HWC)",
-                price: 1188
-            },
-
-            {
-                id: "12",
-                code: "MINI-S (HW)",
-                name: "MINI-S (HW)",
-                price: 1188
-            },
-
-            {
-                id: "13",
-                code: "JS-V2",
-                name: "NOVA",
-                price: 199
-            }
-
-        ];
+        );
 
 
-        // ==========================================
+        tg.MainButton.setTextColor(
+
+            "#FFFFFF"
+
+        );
+
+
+        tg.MainButton.setBackgroundColor(
+
+            "#0077C8"
+
+        );
+
+
+        // =========================================
+
         // CART
-        // ==========================================
+
+        // =========================================
+
 
         let cart = {};
 
 
-        // ==========================================
-        // DISPLAY PRODUCTS
-        // ==========================================
+        // =========================================
 
-        function displayProducts() {
+        // ADD PRODUCT
 
-
-            const grid =
-                document.getElementById(
-                    "productGrid"
-                );
+        // =========================================
 
 
-            grid.innerHTML = "";
+        function addToCart(id) {
 
 
-            products.forEach(product => {
+            cart[id] = 1;
 
 
-                const card =
-                    document.createElement(
-                        "div"
-                    );
+            updateUI(id);
 
 
-                card.className =
-                    "product-card";
+            updateMainButton();
 
-
-                card.innerHTML = `
-
-                    <div class="product-image">
-
-                        <div
-                            class="product-placeholder">
-
-                            💧
-
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="product-code">
-
-                        ${product.code}
-
-                    </div>
-
-
-                    <div
-                        class="product-name">
-
-                        ${product.name}
-
-                    </div>
-
-
-                    <div
-                        class="product-price">
-
-                        $${product.price}
-
-                    </div>
-
-
-                    <button
-                        class="add-button"
-                        id="add-${product.id}"
-                        onclick="addToCart('${product.id}')">
-
-                        ADD TO CART
-
-                    </button>
-
-
-                    <div
-                        class="quantity-control"
-                        id="quantity-${product.id}">
-
-
-                        <button
-                            class="quantity-button"
-                            onclick="changeQuantity('${product.id}', -1)">
-
-                            −
-
-                        </button>
-
-
-                        <span
-                            class="quantity-number"
-                            id="qty-${product.id}">
-
-                            0
-
-                        </span>
-
-
-                        <button
-                            class="quantity-button"
-                            onclick="changeQuantity('${product.id}', 1)">
-
-                            +
-
-                        </button>
-
-
-                    </div>
-
-                `;
-
-
-                grid.appendChild(card);
-
-
-            });
 
         }
 
 
-        // ==========================================
-        // ADD TO CART
-        // ==========================================
+        // =========================================
 
-        function addToCart(productId) {
-
-
-            if (!cart[productId]) {
-
-                cart[productId] = 1;
-
-            }
-
-            else {
-
-                cart[productId]++;
-
-            }
-
-
-            updateProductUI(productId);
-
-
-            updateCartSummary();
-
-        }
-
-
-        // ==========================================
         // CHANGE QUANTITY
-        // ==========================================
 
-        function changeQuantity(
-            productId,
-            change
+        // =========================================
+
+
+        function changeQty(
+
+            id,
+
+            delta
+
         ) {
 
 
-            cart[productId] =
-                (cart[productId] || 0)
-                + change;
+            cart[id] = (
+
+                cart[id] || 0
+
+            ) + delta;
 
 
             if (
-                cart[productId] <= 0
+
+                cart[id] <= 0
+
             ) {
 
-                delete cart[productId];
+
+                delete cart[id];
+
 
             }
 
 
-            updateProductUI(productId);
+            updateUI(id);
 
 
-            updateCartSummary();
+            updateMainButton();
+
 
         }
 
 
-        // ==========================================
+        // =========================================
+
         // UPDATE PRODUCT UI
-        // ==========================================
 
-        function updateProductUI(
-            productId
-        ) {
+        // =========================================
 
 
-            const addButton =
-                document.getElementById(
-                    `add-${productId}`
-                );
+        function updateUI(id) {
 
 
-            const quantityControl =
-                document.getElementById(
-                    `quantity-${productId}`
-                );
+            const card = document.getElementById(
+
+                `card-${id}`
+
+            );
 
 
-            const quantityText =
-                document.getElementById(
-                    `qty-${productId}`
-                );
+            if (!card) return;
 
 
-            const quantity =
-                cart[productId] || 0;
+            const addButton = card.querySelector(
+
+                ".btn-add"
+
+            );
 
 
-            if (quantity > 0) {
+            const counter = document.getElementById(
+
+                `counter-${id}`
+
+            );
+
+
+            const quantityText = document.getElementById(
+
+                `qty-${id}`
+
+            );
+
+
+            if (
+
+                cart[id] > 0
+
+            ) {
 
 
                 addButton.style.display =
+
                     "none";
 
 
-                quantityControl.style.display =
+                counter.style.display =
+
                     "flex";
 
 
                 quantityText.innerText =
-                    quantity;
+
+                    cart[id];
+
 
             }
 
@@ -1034,383 +1863,165 @@
 
 
                 addButton.style.display =
+
                     "block";
 
 
-                quantityControl.style.display =
+                counter.style.display =
+
                     "none";
 
 
-                quantityText.innerText =
-                    "0";
-
             }
 
-        }
-
-
-        // ==========================================
-        // CALCULATE TOTAL ITEMS
-        // ==========================================
-
-        function getTotalItems() {
-
-
-            return Object.values(cart)
-
-                .reduce(
-
-                    (total, quantity) =>
-
-                        total + quantity,
-
-                    0
-
-                );
 
         }
 
 
-        // ==========================================
-        // CALCULATE TOTAL PRICE
-        // ==========================================
+        // =========================================
 
-        function getTotalPrice() {
+        // UPDATE MAIN BUTTON
 
-
-            let total = 0;
+        // =========================================
 
 
-            for (
-                const productId
-                in cart
+        function updateMainButton() {
+
+
+            const totalItems = Object.values(
+
+                cart
+
+            ).reduce(
+
+                (
+
+                    total,
+
+                    quantity
+
+                ) => total + quantity,
+
+                0
+
+            );
+
+
+            if (
+
+                totalItems > 0
+
             ) {
 
 
-                const product =
-                    products.find(
+                tg.MainButton.show();
 
-                        item =>
-
-                            item.id ===
-                            productId
-
-                    );
-
-
-                if (product) {
-
-
-                    total +=
-
-                        product.price *
-                        cart[productId];
-
-                }
-
-            }
-
-
-            return total;
-
-        }
-
-
-        // ==========================================
-        // UPDATE CART SUMMARY
-        // ==========================================
-
-        function updateCartSummary() {
-
-
-            const totalItems =
-                getTotalItems();
-
-
-            const totalPrice =
-                getTotalPrice();
-
-
-            const cartSummary =
-                document.getElementById(
-                    "cartSummary"
-                );
-
-
-            document.getElementById(
-                "cartItems"
-            ).innerText =
-
-                `${totalItems} Item${
-                    totalItems !== 1
-                    ? "s"
-                    : ""
-                }`;
-
-
-            document.getElementById(
-                "cartTotal"
-            ).innerText =
-
-                `$${totalPrice.toLocaleString()}`;
-
-
-            if (totalItems > 0) {
-
-
-                cartSummary.style.display =
-                    "block";
 
             }
 
             else {
 
 
-                cartSummary.style.display =
-                    "none";
+                tg.MainButton.hide();
 
-            }
-
-        }
-
-
-        // ==========================================
-        // OPEN CART
-        // ==========================================
-
-        function openCart() {
-
-
-            const modal =
-                document.getElementById(
-                    "cartModal"
-                );
-
-
-            const list =
-                document.getElementById(
-                    "cartItemsList"
-                );
-
-
-            list.innerHTML = "";
-
-
-            for (
-                const productId
-                in cart
-            ) {
-
-
-                const quantity =
-                    cart[productId];
-
-
-                const product =
-                    products.find(
-
-                        item =>
-
-                            item.id ===
-                            productId
-
-                    );
-
-
-                if (!product) {
-
-                    continue;
-
-                }
-
-
-                const lineTotal =
-                    product.price *
-                    quantity;
-
-
-                const item =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                item.className =
-                    "cart-item";
-
-
-                item.innerHTML = `
-
-                    <div
-                        class="cart-item-name">
-
-                        <strong>
-
-                            ${product.name}
-
-                        </strong>
-
-
-                        <small>
-
-                            ${product.code}
-                            × ${quantity}
-
-                        </small>
-
-                    </div>
-
-
-                    <div
-                        class="cart-item-total">
-
-                        $${lineTotal.toLocaleString()}
-
-                    </div>
-
-                `;
-
-
-                list.appendChild(item);
 
             }
 
 
-            document.getElementById(
-                "modalTotal"
-            ).innerText =
-
-                `$${getTotalPrice().toLocaleString()}`;
-
-
-            modal.style.display =
-                "block";
-
         }
 
 
-        // ==========================================
-        // CLOSE CART
-        // ==========================================
+        // =========================================
 
-        function closeCart() {
+        // SEND ORDER TO PYTHON BACKEND
 
-
-            document.getElementById(
-                "cartModal"
-            ).style.display =
-
-                "none";
-
-        }
+        // =========================================
 
 
-        // ==========================================
-        // CONFIRM ORDER
-        // ==========================================
+        tg.MainButton.onClick(
 
-        function confirmOrder() {
+            function() {
 
 
-            if (
-                getTotalItems() <= 0
-            ) {
+                const products = [];
 
 
-                alert(
-                    "Your cart is empty."
-                );
+                for (
+
+                    const productId in cart
+
+                ) {
 
 
-                return;
-
-            }
+                    products.push(
 
 
-            // ======================================
-            // IMPORTANT:
-            // Format matches your Python backend
-            // ======================================
-
-            const orderData = {
-
-
-                products: Object.keys(cart)
-
-                    .map(productId => {
-
-
-                        const product =
-                            products.find(
-
-                                item =>
-
-                                    item.id ===
-                                    productId
-
-                            );
-
-
-                        return {
+                        {
 
 
                             id: productId,
 
 
-                            quantity:
-                                cart[productId],
+                            quantity: cart[
+
+                                productId
+
+                            ]
 
 
-                            name:
-                                product.name,
+                        }
 
 
-                            price:
-                                `$${product.price}`
-
-                        };
+                    );
 
 
-                    })
-
-            };
+                }
 
 
-            console.log(
-                "ORDER DATA SENT TO BOT:",
-                orderData
-            );
+                const orderData = {
 
 
-            // Send order to Telegram bot
+                    products: products
 
-            tg.sendData(
 
-                JSON.stringify(
+                };
+
+
+                console.log(
+
+                    "ORDER SENT TO BOT:",
+
                     orderData
-                )
 
-            );
-
-
-            // Close Mini App
-
-            tg.close();
-
-        }
+                );
 
 
-        // ==========================================
-        // START APP
-        // ==========================================
+                tg.sendData(
 
-        displayProducts();
+                    JSON.stringify(
+
+                        orderData
+
+                    )
+
+                );
 
 
-        updateCartSummary();
+                tg.close();
+
+
+            }
+
+        );
+
+
+        // Hide button when page loads
+
+        tg.MainButton.hide();
 
 
     </script>
+
 
 </body>
 

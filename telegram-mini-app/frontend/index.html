@@ -1,154 +1,1127 @@
-<script>
-const tg = window.Telegram.WebApp;
+<!DOCTYPE html>
+<html lang="en">
 
-tg.expand();
-tg.ready();
+<head>
+  <meta charset="UTF-8">
 
-tg.MainButton.setText("VIEW ORDER");
-tg.MainButton.setTextColor("#FFFFFF");
-tg.MainButton.setBackgroundColor("#31b545");
+  <meta
+    name="viewport"
+    content="width=device-width,
+    initial-scale=1.0,
+    maximum-scale=1.0,
+    user-scalable=no"
+  >
 
-let cart = {};
+  <title>AquaLife Store</title>
 
-function addToCart(id) {
-    cart[id] = 1;
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-    updateUI(id);
-    updateMainButton();
-}
+  <style>
 
-function changeQty(id, delta) {
-
-    cart[id] = (cart[id] || 0) + delta;
-
-    if (cart[id] <= 0) {
-        delete cart[id];
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    updateUI(id);
-    updateMainButton();
-}
+    body {
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
 
-function updateUI(id) {
+      background:
+        var(--tg-theme-bg-color, #f5f7fa);
 
-    const card = document.getElementById(`card-${id}`);
+      color:
+        var(--tg-theme-text-color, #000000);
 
-    if (!card) return;
+      padding: 16px;
 
-    const btnAdd = card.querySelector(".btn-add");
+      padding-bottom: 100px;
+    }
 
-    const counter = document.getElementById(
-        `counter-${id}`
-    );
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
 
-    const qtyText = document.getElementById(
-        `qty-${id}`
-    );
+    .header h1 {
+      color: #0057B8;
+      font-size: 25px;
+      font-weight: 800;
+    }
+
+    .header p {
+      color: #777;
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px 12px;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: 14px;
+      padding: 10px;
+      box-shadow:
+        0 2px 8px
+        rgba(0, 0, 0, 0.10);
+
+      text-align: center;
+    }
+
+    .product-image {
+      width: 100%;
+      height: 110px;
+      object-fit: contain;
+      margin-bottom: 8px;
+    }
+
+    .product-code {
+      color: #777;
+      font-size: 10px;
+      margin-bottom: 4px;
+    }
+
+    .product-name {
+      font-size: 14px;
+      font-weight: 700;
+      min-height: 38px;
+    }
+
+    .product-price {
+      color: #0057B8;
+      font-size: 17px;
+      font-weight: 800;
+      margin: 8px 0 10px;
+    }
+
+    .add-button {
+      width: 100%;
+      padding: 9px;
+      border: none;
+      border-radius: 9px;
+      background: #0057B8;
+      color: white;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .quantity-control {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .quantity-button {
+      width: 34px;
+      height: 34px;
+      border: none;
+      border-radius: 8px;
+      background: #0057B8;
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .quantity-number {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .cart-bar {
+      display: none;
+
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+
+      padding: 12px 16px;
+
+      background: white;
+
+      box-shadow:
+        0 -2px 10px
+        rgba(0, 0, 0, 0.15);
+
+      z-index: 10;
+    }
+
+    .cart-button {
+      width: 100%;
+      padding: 14px;
+
+      border: none;
+      border-radius: 10px;
+
+      background: #31b545;
+      color: white;
+
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .modal {
+      display: none;
+
+      position: fixed;
+
+      inset: 0;
+
+      background:
+        rgba(0, 0, 0, 0.55);
+
+      align-items: flex-end;
+
+      justify-content: center;
+
+      z-index: 20;
+    }
+
+    .modal-content {
+      width: 100%;
+
+      max-height: 85vh;
+
+      overflow-y: auto;
+
+      background: white;
+
+      border-radius:
+        18px 18px 0 0;
+
+      padding: 20px;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+
+      padding: 12px 0;
+
+      border-bottom:
+        1px solid #eeeeee;
+    }
+
+    .cart-item-name {
+      font-weight: bold;
+    }
+
+    .cart-item-details {
+      color: #777;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .cart-item-total {
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+
+      font-size: 18px;
+      font-weight: bold;
+
+      padding: 18px 0;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .close-button,
+    .confirm-button {
+      flex: 1;
+
+      padding: 13px;
+
+      border: none;
+      border-radius: 10px;
+
+      font-weight: bold;
+    }
+
+    .close-button {
+      background: #eeeeee;
+      color: #333;
+    }
+
+    .confirm-button {
+      background: #0057B8;
+      color: white;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <div class="header">
+
+    <h1>AQUALIFE</h1>
+
+    <p>
+      Water Purification Products
+    </p>
+
+  </div>
 
 
-    if (cart[id] > 0) {
+  <div
+    id="productGrid"
+    class="product-grid"
+  ></div>
 
-        btnAdd.style.display = "none";
 
-        counter.style.display = "flex";
+  <div
+    id="cartBar"
+    class="cart-bar"
+  >
 
-        qtyText.innerText = cart[id];
+    <button
+      class="cart-button"
+      onclick="openCart()"
+    >
 
-    } else {
+      🛒 VIEW CART
 
-        btnAdd.style.display = "block";
+      (<span id="cartCount">0</span>)
 
-        counter.style.display = "none";
+    </button>
+
+  </div>
+
+
+  <div
+    id="cartModal"
+    class="modal"
+  >
+
+    <div
+      class="modal-content"
+    >
+
+      <div
+        class="modal-title"
+      >
+
+        🛒 Your Cart
+
+      </div>
+
+
+      <div
+        id="cartItems"
+      ></div>
+
+
+      <div
+        class="cart-total"
+      >
+
+        <span>
+          TOTAL
+        </span>
+
+        <span
+          id="grandTotal"
+        >
+          $0.00
+        </span>
+
+      </div>
+
+
+      <div
+        class="modal-buttons"
+      >
+
+        <button
+          class="close-button"
+          onclick="closeCart()"
+        >
+
+          CLOSE
+
+        </button>
+
+
+        <button
+          class="confirm-button"
+          onclick="confirmOrder()"
+        >
+
+          CONFIRM ORDER
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+    // ==========================================
+    // TELEGRAM
+    // ==========================================
+
+    const tg =
+      window.Telegram.WebApp;
+
+
+    tg.ready();
+
+
+    tg.expand();
+
+
+    // ==========================================
+    // PRODUCTS
+    // ==========================================
+
+    const products = [
+
+      {
+        id: "SU-G",
+        name: "SAENG SU (TT)",
+        price: 449
+      },
+
+      {
+        id: "SU(FS)-G",
+        name: "SAENG SU (FS)",
+        price: 499
+      },
+
+      {
+        id: "MNL(FS)-W",
+        name: "MNL(FS) - WHITE",
+        price: 799
+      },
+
+      {
+        id: "SC",
+        name: "SUPER COOLING",
+        price: 1188
+      },
+
+      {
+        id: "JS-V3",
+        name: "JICO",
+        price: 219
+      },
+
+      {
+        id: "RKT5000",
+        name: "ROKKET 5000",
+        price: 399
+      },
+
+      {
+        id: "RKT8000",
+        name: "ROKKET 8000",
+        price: 449
+      },
+
+      {
+        id: "RKT10000",
+        name: "ROKKET 10000",
+        price: 549
+      },
+
+      {
+        id: "CANNON",
+        name: "CANNON",
+        price: 249
+      },
+
+      {
+        id: "JS-VT",
+        name: "TRICO",
+        price: 219
+      },
+
+      {
+        id: "MINI-S (HWC)",
+        name: "MINI-S (HWC)",
+        price: 1188
+      },
+
+      {
+        id: "MINI-S (HW)",
+        name: "MINI-S (HW)",
+        price: 1188
+      },
+
+      {
+        id: "JS-V2",
+        name: "NOVA",
+        price: 199
+      }
+
+    ];
+
+
+    // ==========================================
+    // CART
+    // ==========================================
+
+    let cart = {};
+
+
+    // ==========================================
+    // FORMAT PRICE
+    // ==========================================
+
+    function formatPrice(
+      price
+    ) {
+
+      return "$" +
+
+        price.toLocaleString(
+          "en-US",
+          {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }
+        );
 
     }
 
-}
 
+    // ==========================================
+    // DISPLAY PRODUCTS
+    // ==========================================
 
-function updateMainButton() {
+    function displayProducts() {
 
-    const totalItems = Object.values(cart)
-
-        .reduce(
-
-            (total, quantity) =>
-
-                total + quantity,
-
-            0
-
+      const grid =
+        document.getElementById(
+          "productGrid"
         );
 
 
-    if (totalItems > 0) {
+      products.forEach(
 
-        tg.MainButton.show();
+        product => {
 
-    } else {
+          const card =
+            document.createElement(
+              "div"
+            );
 
-        tg.MainButton.hide();
+
+          card.className =
+            "product-card";
+
+
+          card.innerHTML = `
+
+            <img
+              class="product-image"
+              src="https://via.placeholder.com/150"
+              alt="${product.name}"
+            >
+
+            <div
+              class="product-code"
+            >
+              ${product.id}
+            </div>
+
+            <div
+              class="product-name"
+            >
+              ${product.name}
+            </div>
+
+            <div
+              class="product-price"
+            >
+              ${formatPrice(
+                product.price
+              )}
+            </div>
+
+            <button
+              class="add-button"
+              id="add-${product.id}"
+              onclick="addToCart('${product.id}')"
+            >
+              ADD TO CART
+            </button>
+
+            <div
+              class="quantity-control"
+              id="qty-${product.id}"
+            >
+
+              <button
+                class="quantity-button"
+                onclick="changeQuantity(
+                  '${product.id}',
+                  -1
+                )"
+              >
+                −
+              </button>
+
+              <span
+                class="quantity-number"
+                id="number-${product.id}"
+              >
+                0
+              </span>
+
+              <button
+                class="quantity-button"
+                onclick="changeQuantity(
+                  '${product.id}',
+                  1
+                )"
+              >
+                +
+              </button>
+
+            </div>
+
+          `;
+
+
+          grid.appendChild(
+            card
+          );
+
+        }
+
+      );
 
     }
 
-}
 
+    // ==========================================
+    // ADD TO CART
+    // ==========================================
 
-/* ======================================
-   SEND REAL ORDER TO BACKEND
-====================================== */
-
-tg.MainButton.onClick(function () {
-
-
-    const products = [];
-
-
-    for (
-
-        const productId in cart
-
+    function addToCart(
+      id
     ) {
 
+      cart[id] =
+        (
+          cart[id] || 0
+        ) + 1;
 
-        products.push({
 
-            id: productId,
+      updateProductUI(
+        id
+      );
 
-            quantity: cart[productId]
 
-        });
+      updateCartBar();
 
     }
 
 
-    const orderData = {
+    // ==========================================
+    // CHANGE QUANTITY
+    // ==========================================
 
-        products: products
+    function changeQuantity(
+      id,
+      amount
+    ) {
 
-    };
-
-
-    console.log(
-
-        "SENDING ORDER:",
-
-        orderData
-
-    );
+      cart[id] =
+        (
+          cart[id] || 0
+        ) + amount;
 
 
-    tg.sendData(
+      if (
+        cart[id] <= 0
+      ) {
+
+        delete cart[id];
+
+      }
+
+
+      updateProductUI(
+        id
+      );
+
+
+      updateCartBar();
+
+    }
+
+
+    // ==========================================
+    // UPDATE PRODUCT
+    // ==========================================
+
+    function updateProductUI(
+      id
+    ) {
+
+      const addButton =
+        document.getElementById(
+          `add-${id}`
+        );
+
+
+      const quantityControl =
+        document.getElementById(
+          `qty-${id}`
+        );
+
+
+      const quantityNumber =
+        document.getElementById(
+          `number-${id}`
+        );
+
+
+      const quantity =
+        cart[id] || 0;
+
+
+      if (
+        quantity > 0
+      ) {
+
+        addButton.style.display =
+          "none";
+
+
+        quantityControl.style.display =
+          "flex";
+
+
+        quantityNumber.textContent =
+          quantity;
+
+      }
+
+      else {
+
+        addButton.style.display =
+          "block";
+
+
+        quantityControl.style.display =
+          "none";
+
+
+        quantityNumber.textContent =
+          "0";
+
+      }
+
+    }
+
+
+    // ==========================================
+    // TOTAL ITEMS
+    // ==========================================
+
+    function getTotalItems() {
+
+      return Object.values(
+        cart
+      ).reduce(
+
+        (
+          total,
+          quantity
+        ) => total + quantity,
+
+        0
+
+      );
+
+    }
+
+
+    // ==========================================
+    // TOTAL PRICE
+    // ==========================================
+
+    function getGrandTotal() {
+
+      return Object.entries(
+        cart
+      ).reduce(
+
+        (
+          total,
+          [
+            productId,
+            quantity
+          ]
+        ) => {
+
+          const product =
+            products.find(
+
+              item =>
+                item.id ===
+                productId
+
+            );
+
+
+          return total +
+
+            (
+              product.price *
+              quantity
+
+            );
+
+        },
+
+        0
+
+      );
+
+    }
+
+
+    // ==========================================
+    // UPDATE CART BAR
+    // ==========================================
+
+    function updateCartBar() {
+
+      const totalItems =
+        getTotalItems();
+
+
+      const cartBar =
+        document.getElementById(
+          "cartBar"
+        );
+
+
+      document.getElementById(
+        "cartCount"
+      ).textContent =
+        totalItems;
+
+
+      if (
+        totalItems > 0
+      ) {
+
+        cartBar.style.display =
+          "block";
+
+      }
+
+      else {
+
+        cartBar.style.display =
+          "none";
+
+      }
+
+    }
+
+
+    // ==========================================
+    // OPEN CART
+    // ==========================================
+
+    function openCart() {
+
+      const cartItems =
+        document.getElementById(
+          "cartItems"
+        );
+
+
+      cartItems.innerHTML =
+        "";
+
+
+      Object.entries(
+        cart
+      ).forEach(
+
+        (
+          [
+            productId,
+            quantity
+          ]
+        ) => {
+
+          const product =
+            products.find(
+
+              item =>
+                item.id ===
+                productId
+
+            );
+
+
+          const itemTotal =
+            product.price *
+            quantity;
+
+
+          const itemElement =
+            document.createElement(
+              "div"
+            );
+
+
+          itemElement.className =
+            "cart-item";
+
+
+          itemElement.innerHTML = `
+
+            <div>
+
+              <div
+                class="cart-item-name"
+              >
+                ${product.name}
+              </div>
+
+              <div
+                class="cart-item-details"
+              >
+
+                ${product.id}
+
+                ·
+
+                ${formatPrice(
+                  product.price
+                )}
+
+                ×
+
+                ${quantity}
+
+              </div>
+
+            </div>
+
+            <div
+              class="cart-item-total"
+            >
+
+              ${formatPrice(
+                itemTotal
+              )}
+
+            </div>
+
+          `;
+
+
+          cartItems.appendChild(
+            itemElement
+          );
+
+        }
+
+      );
+
+
+      document.getElementById(
+        "grandTotal"
+      ).textContent =
+        formatPrice(
+          getGrandTotal()
+        );
+
+
+      document.getElementById(
+        "cartModal"
+      ).style.display =
+        "flex";
+
+    }
+
+
+    // ==========================================
+    // CLOSE CART
+    // ==========================================
+
+    function closeCart() {
+
+      document.getElementById(
+        "cartModal"
+      ).style.display =
+        "none";
+
+    }
+
+
+    // ==========================================
+    // CONFIRM ORDER
+    // ==========================================
+
+    function confirmOrder() {
+
+      const totalItems =
+        getTotalItems();
+
+
+      if (
+        totalItems === 0
+      ) {
+
+        alert(
+          "Your cart is empty."
+        );
+
+        return;
+
+      }
+
+
+      // Create order
+
+      const order = {
+
+        products:
+
+          Object.entries(
+            cart
+          ).map(
+
+            (
+              [
+                productId,
+                quantity
+              ]
+            ) => {
+
+              const product =
+                products.find(
+
+                  item =>
+                    item.id ===
+                    productId
+
+                );
+
+
+              return {
+
+                id:
+                  product.id,
+
+                name:
+                  product.name,
+
+                price:
+                  product.price,
+
+                quantity:
+                  quantity,
+
+                total:
+                  product.price *
+                  quantity
+
+              };
+
+            }
+
+          ),
+
+        total_items:
+          totalItems,
+
+        grand_total:
+          getGrandTotal()
+
+      };
+
+
+      // DEBUG
+
+      console.log(
+        "ORDER TO SEND:",
+        order
+      );
+
+
+      // Make sure Telegram is ready
+
+      tg.ready();
+
+
+      // Send order to bot
+
+      tg.sendData(
 
         JSON.stringify(
-
-            orderData
-
+          order
         )
 
-    );
+      );
 
 
-    tg.close();
+      // Close Mini App
 
-});
-</script>
+      setTimeout(
+
+        () => {
+
+          tg.close();
+
+        },
+
+        500
+
+      );
+
+    }
+
+
+    // ==========================================
+    // START
+    // ==========================================
+
+    displayProducts();
+
+  </script>
+
+</body>
+
+</html>

@@ -1,13 +1,11 @@
 import asyncio
 import logging
 import json
-
 from pathlib import Path
 from datetime import datetime
 
 from aiogram import Bot, Dispatcher, F, types
 from aiogram.filters import CommandStart
-
 from aiogram.types import (
     InlineKeyboardMarkup,
     InlineKeyboardButton,
@@ -24,13 +22,11 @@ from reportlab.pdfgen import canvas
 # ==================================================
 
 # IMPORTANT:
-# Use your real BotFather token here.
-# If this token has already been shared publicly,
-# generate a new token from BotFather.
+# Replace this with your NEW BotFather token.
 BOT_TOKEN = "8274446621:AAH6ItCjsHzle6GebZsGGHSbmGqyfRE7S0I"
 
 
-# Your GitHub Pages Mini App URL
+# GitHub Pages Mini App URL
 MINI_APP_URL = (
     "https://chanrathsn.github.io/"
     "Jisoo_Booking/"
@@ -40,31 +36,16 @@ MINI_APP_URL = (
 
 
 # ==================================================
-# PROJECT FOLDERS
+# PDF OUTPUT FOLDER
 # ==================================================
 
-# Current file:
-#
-# Jisoo_Booking/
-# └── backend/
-#     └── bot.py
-#
-# Parent folder:
-#
-# Jisoo_Booking/
-#
-BASE_DIR = Path(__file__).resolve().parent.parent
+# Your exact folder location
+OUT_DIR = Path(
+    r"D:\Aqualife Things\JisooBooking\out"
+)
 
 
-# PDF output folder:
-#
-# Jisoo_Booking/
-# └── out/
-#
-OUT_DIR = BASE_DIR / "out"
-
-
-# Automatically create the out folder
+# Create the folder automatically
 OUT_DIR.mkdir(
     parents=True,
     exist_ok=True
@@ -157,20 +138,16 @@ dp = Dispatcher()
 
 
 # ==================================================
-# PRICE FORMAT
+# FORMAT PRICE
 # ==================================================
 
-def format_price(
-    amount
-):
+def format_price(amount):
 
-    return (
-        f"${amount:,.2f}"
-    )
+    return f"${amount:,.2f}"
 
 
 # ==================================================
-# CREATE PDF RECEIPT
+# CREATE SAMPLE RECEIPT PDF
 # ==================================================
 
 def create_sample_receipt(
@@ -180,58 +157,50 @@ def create_sample_receipt(
     order_number
 ):
 
-    # Save PDF inside:
-    #
-    # Jisoo_Booking/out/
-    #
-    pdf_path = (
-
-        OUT_DIR /
-
+    # File name
+    filename = (
         f"sample_receipt_"
         f"{order_number}.pdf"
-
     )
 
 
+    # Full path:
+    #
+    # D:\Aqualife Things\
+    # JisooBooking\out\
+    # sample_receipt_xxx.pdf
+    #
+    pdf_path = OUT_DIR / filename
+
+
     # Create PDF
-
     pdf = canvas.Canvas(
-
         str(pdf_path),
-
         pagesize=A4
-
     )
 
 
     width, height = A4
 
 
+    # Starting position
     y = height - 50
 
 
-    # ==============================================
+    # ==================================================
     # HEADER
-    # ==============================================
+    # ==================================================
 
     pdf.setFont(
-
         "Helvetica-Bold",
-
         20
-
     )
 
 
     pdf.drawCentredString(
-
         width / 2,
-
         y,
-
         "AQUALIFE CAMBODIA"
-
     )
 
 
@@ -239,49 +208,35 @@ def create_sample_receipt(
 
 
     pdf.setFont(
-
         "Helvetica-Bold",
-
         16
-
     )
 
 
     pdf.drawCentredString(
-
         width / 2,
-
         y,
-
         "SAMPLE RECEIPT"
-
     )
 
 
     y -= 40
 
 
-    # ==============================================
+    # ==================================================
     # CUSTOMER INFORMATION
-    # ==============================================
+    # ==================================================
 
     pdf.setFont(
-
         "Helvetica",
-
         10
-
     )
 
 
     pdf.drawString(
-
         50,
-
         y,
-
         f"Customer: {customer_name}"
-
     )
 
 
@@ -289,94 +244,65 @@ def create_sample_receipt(
 
 
     pdf.drawString(
-
         50,
-
         y,
-
         f"Order No: {order_number}"
-
     )
 
 
     y -= 18
 
 
+    current_date = datetime.now().strftime(
+        "%Y-%m-%d %H:%M"
+    )
+
+
     pdf.drawString(
-
         50,
-
         y,
-
-        (
-
-            "Date: "
-
-            f"{datetime.now().strftime("
-            "'%Y-%m-%d %H:%M')"
-
-        )
-
+        f"Date: {current_date}"
     )
 
 
     y -= 35
 
 
-    # ==============================================
+    # ==================================================
     # TABLE HEADER
-    # ==============================================
+    # ==================================================
 
     pdf.setFont(
-
         "Helvetica-Bold",
-
         10
-
     )
 
 
     pdf.drawString(
-
         50,
-
         y,
-
         "Product"
-
     )
 
 
     pdf.drawString(
-
         300,
-
         y,
-
         "Qty"
-
     )
 
 
     pdf.drawString(
-
         360,
-
         y,
-
         "Unit Price"
-
     )
 
 
     pdf.drawString(
-
         470,
-
         y,
-
         "Total"
-
     )
 
 
@@ -384,119 +310,82 @@ def create_sample_receipt(
 
 
     pdf.line(
-
         50,
-
         y,
-
         545,
-
         y
-
     )
 
 
     y -= 20
 
 
-    # ==============================================
-    # PRODUCTS
-    # ==============================================
+    # ==================================================
+    # PRODUCT LIST
+    # ==================================================
 
     pdf.setFont(
-
         "Helvetica",
-
         10
-
     )
 
 
     for item in products:
 
-
         name = item["name"]
-
 
         quantity = item["quantity"]
 
-
         price = item["price"]
 
-
         item_total = (
-
-            price *
-
-            quantity
-
+            price * quantity
         )
 
 
         pdf.drawString(
-
             50,
-
             y,
-
             name[:35]
-
         )
 
 
         pdf.drawString(
-
             300,
-
             y,
-
             str(quantity)
-
         )
 
 
         pdf.drawString(
-
             360,
-
             y,
-
             format_price(price)
-
         )
 
 
         pdf.drawString(
-
             470,
-
             y,
-
             format_price(item_total)
-
         )
 
 
         y -= 20
 
 
-    # ==============================================
+    # ==================================================
     # TOTAL
-    # ==============================================
+    # ==================================================
 
     y -= 15
 
 
     pdf.line(
-
         50,
-
         y,
-
         545,
-
         y
-
     )
 
 
@@ -504,60 +393,42 @@ def create_sample_receipt(
 
 
     pdf.setFont(
-
         "Helvetica-Bold",
-
         14
-
     )
 
 
     pdf.drawString(
-
         350,
-
         y,
-
         "TOTAL:"
-
     )
 
 
     pdf.drawString(
-
         470,
-
         y,
-
         format_price(total)
-
     )
 
 
     y -= 50
 
 
-    # ==============================================
+    # ==================================================
     # FOOTER
-    # ==============================================
+    # ==================================================
 
     pdf.setFont(
-
         "Helvetica-Oblique",
-
         10
-
     )
 
 
     pdf.drawCentredString(
-
         width / 2,
-
         y,
-
         "This is a sample receipt."
-
     )
 
 
@@ -565,21 +436,17 @@ def create_sample_receipt(
 
 
     pdf.drawCentredString(
-
         width / 2,
-
         y,
-
         "Official invoice will be issued later."
-
     )
 
 
     # Save PDF
-
     pdf.save()
 
 
+    # Return the PDF path
     return pdf_path
 
 
@@ -588,17 +455,12 @@ def create_sample_receipt(
 # ==================================================
 
 @dp.message(
-
     CommandStart()
-
 )
 
 async def cmd_start(
-
     message: types.Message
-
 ):
-
 
     keyboard = InlineKeyboardMarkup(
 
@@ -609,9 +471,7 @@ async def cmd_start(
                 InlineKeyboardButton(
 
                     text=(
-
                         "Open AquaLife Store 🛒"
-
                     ),
 
                     web_app=WebAppInfo(
@@ -632,21 +492,15 @@ async def cmd_start(
     await message.answer(
 
         (
-
             f"Hello "
-
             f"{message.from_user.first_name}"
-
             "! 👋\n\n"
 
             "Welcome to AquaLife Cambodia 💧\n\n"
 
-            "Choose your products, "
-
-            "add them to your cart, "
-
-            "and confirm your order."
-
+            "Choose products, add them "
+            "to your cart, and confirm "
+            "your order."
         ),
 
         reply_markup=keyboard
@@ -659,61 +513,42 @@ async def cmd_start(
 # ==================================================
 
 @dp.message(
-
     F.web_app_data
-
 )
 
 async def handle_mini_app_data(
-
     message: types.Message
-
 ):
-
 
     try:
 
-
         # ==========================================
-        # READ DATA FROM MINI APP
+        # READ DATA
         # ==========================================
 
         raw_data = (
-
             message.web_app_data.data
-
         )
 
 
         order_data = json.loads(
-
             raw_data
-
         )
 
 
         products = (
-
             order_data.get(
-
                 "products",
-
                 []
-
             )
-
         )
 
 
         if not products:
 
-
             await message.answer(
-
                 "⚠️ Your cart is empty."
-
             )
-
 
             return
 
@@ -723,21 +558,19 @@ async def handle_mini_app_data(
         # ==========================================
 
         customer_name = (
-
             message.from_user.full_name
-
         )
 
 
-        username = (
+        if message.from_user.username:
 
-            f"@{message.from_user.username}"
+            username = (
+                f"@{message.from_user.username}"
+            )
 
-            if message.from_user.username
+        else:
 
-            else "No username"
-
-        )
+            username = "No username"
 
 
         # ==========================================
@@ -761,12 +594,9 @@ async def handle_mini_app_data(
 
         calculated_total = 0
 
-
         calculated_items = 0
 
-
         verified_products = []
-
 
         order_lines = []
 
@@ -777,9 +607,7 @@ async def handle_mini_app_data(
             product_id = str(
 
                 item.get(
-
                     "id"
-
                 )
 
             )
@@ -788,24 +616,18 @@ async def handle_mini_app_data(
             quantity = int(
 
                 item.get(
-
                     "quantity",
-
                     1
-
                 )
 
             )
 
 
-            # Find product from our official catalog
-
+            # Get official product
             product = (
 
                 PRODUCT_CATALOG.get(
-
                     product_id
-
                 )
 
             )
@@ -813,21 +635,16 @@ async def handle_mini_app_data(
 
             if not product:
 
-
                 continue
 
 
             product_name = (
-
                 product["name"]
-
             )
 
 
             product_price = (
-
                 product["price"]
-
             )
 
 
@@ -841,19 +658,16 @@ async def handle_mini_app_data(
 
 
             calculated_total += (
-
                 item_total
-
             )
 
 
             calculated_items += (
-
                 quantity
-
             )
 
 
+            # Store verified data
             verified_products.append(
 
                 {
@@ -873,6 +687,7 @@ async def handle_mini_app_data(
             )
 
 
+            # Telegram order text
             order_lines.append(
 
                 (
@@ -896,8 +711,9 @@ async def handle_mini_app_data(
             )
 
 
-        if not verified_products:
+        # Check valid products
 
+        if not verified_products:
 
             await message.answer(
 
@@ -905,12 +721,11 @@ async def handle_mini_app_data(
 
             )
 
-
             return
 
 
         # ==========================================
-        # CREATE ORDER SUMMARY
+        # ORDER SUMMARY
         # ==========================================
 
         order_summary = (
@@ -936,7 +751,7 @@ async def handle_mini_app_data(
 
 
         # ==========================================
-        # SEND ORDER DETAILS TO TELEGRAM
+        # SEND ORDER DETAILS
         # ==========================================
 
         response_message = (
@@ -986,7 +801,7 @@ async def handle_mini_app_data(
 
 
         # ==========================================
-        # CREATE PDF IN OUT FOLDER
+        # CREATE PDF
         # ==========================================
 
         pdf_path = (
@@ -1029,9 +844,9 @@ async def handle_mini_app_data(
 
                 f"{order_number}\n\n"
 
-                "The PDF was generated "
+                "PDF saved to:\n"
 
-                "automatically from your order."
+                f"{pdf_path}"
 
             ),
 
@@ -1040,22 +855,38 @@ async def handle_mini_app_data(
         )
 
 
+        # Show location in terminal
+
+        print()
+
         print(
-
-            "\nPDF SAVED TO:\n"
-
-            f"{pdf_path}\n"
-
+            "===================================="
         )
+
+        print(
+            "PDF CREATED SUCCESSFULLY"
+        )
+
+        print(
+            "===================================="
+        )
+
+        print(
+            f"Saved at:\n{pdf_path}"
+        )
+
+        print(
+            "===================================="
+        )
+
+        print()
 
 
     except json.JSONDecodeError:
 
 
         logging.exception(
-
             "Invalid JSON received."
-
         )
 
 
@@ -1072,7 +903,6 @@ async def handle_mini_app_data(
         logging.exception(
 
             f"Error processing order: "
-
             f"{error}"
 
         )
@@ -1097,7 +927,6 @@ async def handle_mini_app_data(
 
 async def main():
 
-
     logging.basicConfig(
 
         level=logging.INFO
@@ -1105,7 +934,7 @@ async def main():
     )
 
 
-    # Remove old pending Telegram updates
+    # Remove old pending updates
 
     await bot.delete_webhook(
 
@@ -1114,32 +943,27 @@ async def main():
     )
 
 
-    print(
+    print()
 
+    print(
         "===================================="
-
     )
 
-
     print(
-
-        " AquaLife Telegram Store Online 💧"
-
+        "AquaLife Telegram Store Online 💧"
     )
 
-
     print(
-
         "===================================="
-
     )
 
+    print()
 
     print(
-
-        f"PDF folder: {OUT_DIR}"
-
+        f"PDF Folder:\n{OUT_DIR}"
     )
+
+    print()
 
 
     await dp.start_polling(
@@ -1155,9 +979,6 @@ async def main():
 
 if __name__ == "__main__":
 
-
     asyncio.run(
-
         main()
-
     )
